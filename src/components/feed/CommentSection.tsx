@@ -2,8 +2,26 @@
 
 import { useState, useTransition, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Send, Trash2, MessageCircle, Heart } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { Send, Trash2, MessageCircle, MoreHorizontal } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { LikeButton } from './LikeButton'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { getComments, addComment, deleteComment, toggleCommentLike } from '@/actions/posts'
 
 interface RawComment {
@@ -109,84 +127,108 @@ function CommentRow({
   currentUserId,
   isAdmin,
   onDelete,
-  onReply,
-  onLike,
-  isReplying,
   depth = 0,
 }: {
   comment: RawComment
   currentUserId?: string
   isAdmin: boolean
   onDelete: (id: string) => void
-  onLike: (id: string) => void
   depth?: number
 }) {
   const canDelete = currentUserId === comment.user_id || isAdmin
   const initials = (comment.profiles.display_name ?? comment.profiles.username).slice(0, 2).toUpperCase()
+  const router = useRouter()
+  const stop = (e: React.MouseEvent) => e.stopPropagation()
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   return (
-    <div className={`flex gap-3 py-3 group/comment ${depth === 0 ? 'border-b border-border/50' : ''}`}>
-      <Link href={`/profile/${comment.profiles.username}`} className="shrink-0">
-        <Avatar className="h-9 w-9">
-          <AvatarImage src={comment.profiles.avatar_url ?? undefined} />
-          <AvatarFallback className="bg-primary/20 text-primary text-sm font-bold">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
-      </Link>
+    <>
+      <div
+        onClick={() => router.push(`/reply/${comment.id}`)}
+        className={`flex gap-3 py-3 group/comment border-b border-border/50 cursor-pointer hover:bg-accent/20 transition-colors ${depth > 0 ? 'pl-12' : ''}`}
+      >
+        <Link href={`/profile/${comment.profiles.username}`} onClick={stop} className="shrink-0">
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={comment.profiles.avatar_url ?? undefined} />
+            <AvatarFallback className="bg-primary/20 text-primary text-sm font-bold">
+              {initials}
+            </AvatarFallback>
+          </Avatar>
+        </Link>
 
-      <div className="flex-1 min-w-0">
-        {/* Header */}
-        <div className="flex items-center gap-1.5 mb-0.5">
-          <Link href={`/profile/${comment.profiles.username}`} className="font-semibold text-sm hover:text-primary transition-colors">
-            {comment.profiles.display_name ?? comment.profiles.username}
-          </Link>
-          <span className="text-xs text-muted-foreground">@{comment.profiles.username}</span>
-          <span className="text-xs text-muted-foreground">·</span>
-          <span className="text-xs text-muted-foreground">{timeAgo(comment.created_at)}</span>
-          {canDelete && (
-            <button
-              onClick={() => onDelete(comment.id)}
-              className="ml-auto opacity-0 group-hover/comment:opacity-100 p-1 rounded text-muted-foreground hover:text-destructive transition-all"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </div>
-
-        {/* Content */}
-        <p className="text-sm text-foreground/90 leading-relaxed break-words mb-2">{comment.content}</p>
-
-        {/* Footer — identical to PostCard */}
-        <div className="flex items-center gap-4">
-          {currentUserId ? (
-            <button
-              onClick={() => onLike(comment.id)}
-              className={`flex items-center gap-1.5 text-sm transition-colors ${
-                comment.user_has_liked ? 'text-rose-400' : 'text-muted-foreground hover:text-rose-400'
-              }`}
-            >
-              <Heart className="h-4 w-4" fill={comment.user_has_liked ? 'currentColor' : 'none'} />
-              {comment.like_count > 0 && <span className="tabular-nums">{comment.like_count}</span>}
-            </button>
-          ) : (
-            <Link href="/register" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-rose-400 transition-colors">
-              <Heart className="h-4 w-4" />
-              {comment.like_count > 0 && <span className="tabular-nums">{comment.like_count}</span>}
+        <div className="flex-1 min-w-0">
+          {/* Header */}
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <Link href={`/profile/${comment.profiles.username}`} onClick={stop} className="font-semibold text-sm hover:text-primary transition-colors">
+              {comment.profiles.display_name ?? comment.profiles.username}
             </Link>
-          )}
+            <span className="text-xs text-muted-foreground">@{comment.profiles.username}</span>
+            <span className="text-xs text-muted-foreground">·</span>
+            <span className="text-xs text-muted-foreground">{timeAgo(comment.created_at)}</span>
+            {canDelete && (
+              <div onClick={stop} className="ml-auto">
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side="bottom" align="end">
+                    <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
+                      <Trash2 className="h-4 w-4" />
+                      Eliminar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+          </div>
 
-          {/* Reply bubble — shows count and navigates to /reply/[id] */}
-          <Link
-            href={`/reply/${comment.id}`}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
-          >
-            <MessageCircle className="h-4 w-4" />
-            {comment.reply_count > 0 && <span className="tabular-nums">{comment.reply_count}</span>}
-          </Link>
+          {/* Content */}
+          <p className="text-sm text-foreground/90 leading-relaxed break-words mb-2">{comment.content}</p>
+
+          {/* Footer */}
+          <div className="flex items-center gap-3 pt-2 border-t border-border/50" onClick={stop}>
+            {currentUserId ? (
+              <LikeButton
+                postId={comment.id}
+                initialLiked={comment.user_has_liked}
+                initialCount={comment.like_count}
+                onToggle={toggleCommentLike}
+              />
+            ) : (
+              <Link href="/register" className="flex items-center gap-1.5 text-sm text-muted-foreground px-1 hover:text-red-500 transition-colors">
+                <Heart className="h-4 w-4" />
+                <span className="tabular-nums">{comment.like_count}</span>
+              </Link>
+            )}
+
+            <span className="group flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
+              <MessageCircle className="h-4 w-4 transition-transform group-hover:scale-110" />
+              {comment.reply_count > 0 && <span className="tabular-nums">{comment.reply_count}</span>}
+            </span>
+          </div>
         </div>
       </div>
-    </div>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar comentario?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. Se eliminará el comentario y todas sus respuestas.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => onDelete(comment.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
 
@@ -210,7 +252,6 @@ export function CommentSection({ postId, currentUserId, isAdmin = false, preview
   function handleAdd(content: string, parentId?: string) {
     startTransition(async () => {
       await addComment(postId, content, parentId)
-      setReplyingTo(null)
       await reload()
     })
   }
@@ -323,24 +364,35 @@ export function CommentSection({ postId, currentUserId, isAdmin = false, preview
             currentUserId={currentUserId}
             isAdmin={isAdmin}
             onDelete={handleDelete}
-            onLike={handleLike}
             depth={0}
           />
-
-          {/* Replies (inline preview — click bubble to see more) */}
-          {comment.replies.map(reply => (
-            <div key={reply.id} className="pl-12">
-              <CommentRow
-                comment={reply}
-                currentUserId={currentUserId}
-                isAdmin={isAdmin}
-                onDelete={handleDelete}
-                onLike={handleLike}
-                depth={1}
-              />
-            </div>
-          ))}
-
+          {comment.replies.length > 0 && (() => {
+            const best = comment.replies.reduce((a, b) => {
+              if (b.like_count !== a.like_count) return b.like_count > a.like_count ? b : a
+              return new Date(b.created_at) >= new Date(a.created_at) ? b : a
+            })
+            const last = best
+            const extra = comment.replies.length - 1
+            const initials = (last.profiles.display_name ?? last.profiles.username).slice(0, 2).toUpperCase()
+            return (
+              <Link
+                href={`/reply/${comment.id}`}
+                className="flex items-center gap-3 py-2 pl-12 border-b border-border/50 group/rpreview"
+              >
+                <Avatar className="h-5 w-5 shrink-0">
+                  <AvatarImage src={last.profiles.avatar_url ?? undefined} />
+                  <AvatarFallback className="bg-primary/20 text-primary text-[8px] font-bold">{initials}</AvatarFallback>
+                </Avatar>
+                <p className="text-xs text-muted-foreground min-w-0 truncate flex-1 group-hover/rpreview:text-foreground transition-colors">
+                  <span className="font-semibold text-foreground/70 mr-1.5">{last.profiles.display_name ?? last.profiles.username}</span>
+                  {last.content}
+                </p>
+                {extra > 0 && (
+                  <span className="text-xs text-violet-400 hover:text-violet-300 shrink-0 transition-colors">Ver {extra} más →</span>
+                )}
+              </Link>
+            )
+          })()}
         </div>
       ))}
     </div>

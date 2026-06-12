@@ -2,8 +2,27 @@
 
 import { useState, useTransition } from 'react'
 import Link from 'next/link'
-import { Heart, MessageCircle, Trash2, Send } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { MessageCircle, Trash2, Send, Heart, MoreHorizontal } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { LikeButton } from './LikeButton'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
+import { SubReplyPreview } from './SubReplyPreview'
 import { addComment, deleteComment, toggleCommentLike, getCommentReplies } from '@/actions/posts'
 
 interface Reply {
@@ -38,10 +57,115 @@ function timeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
 }
 
+function ReplyRow({
+  reply,
+  canDelete,
+  initials,
+  router,
+  stop,
+  currentUserId,
+  onDelete,
+}: {
+  reply: Reply
+  canDelete: boolean
+  initials: string
+  router: ReturnType<typeof useRouter>
+  stop: (e: React.MouseEvent) => void
+  currentUserId?: string
+  onDelete: (id: string) => void
+}) {
+  const [confirmOpen, setConfirmOpen] = useState(false)
+  return (
+    <>
+      <div
+        onClick={() => router.push(`/reply/${reply.id}`)}
+        className="flex gap-3 py-3 border-b border-border/50 group/reply cursor-pointer hover:bg-accent/20 transition-colors"
+      >
+        <Link href={`/profile/${reply.profiles.username}`} onClick={stop} className="shrink-0">
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={reply.profiles.avatar_url ?? undefined} />
+            <AvatarFallback className="bg-primary/20 text-primary text-sm font-bold">{initials}</AvatarFallback>
+          </Avatar>
+        </Link>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-1.5 mb-0.5">
+            <Link href={`/profile/${reply.profiles.username}`} onClick={stop} className="font-semibold text-sm hover:text-primary transition-colors">
+              {reply.profiles.display_name ?? reply.profiles.username}
+            </Link>
+            <span className="text-xs text-muted-foreground">@{reply.profiles.username}</span>
+            <span className="text-xs text-muted-foreground">·</span>
+            <span className="text-xs text-muted-foreground">{timeAgo(reply.created_at)}</span>
+            {canDelete && (
+              <div onClick={stop} className="ml-auto">
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors">
+                    <MoreHorizontal className="h-4 w-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent side="bottom" align="end">
+                    <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
+                      <Trash2 className="h-4 w-4" />
+                      Eliminar
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            )}
+          </div>
+          <p className="text-sm text-foreground/90 leading-relaxed break-words mb-2">{reply.content}</p>
+          <div className="flex items-center gap-3 pt-2 border-t border-border/50" onClick={stop}>
+            {currentUserId ? (
+              <LikeButton
+                postId={reply.id}
+                initialLiked={reply.user_has_liked}
+                initialCount={reply.like_count}
+                onToggle={toggleCommentLike}
+              />
+            ) : (
+              <Link href="/register" className="flex items-center gap-1.5 text-sm text-muted-foreground px-1 hover:text-red-500 transition-colors">
+                <Heart className="h-4 w-4" />
+                <span className="tabular-nums">{reply.like_count}</span>
+              </Link>
+            )}
+            <span className="group flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
+              <MessageCircle className="h-4 w-4 transition-transform group-hover:scale-110" />
+              {reply.reply_count > 0 && <span className="tabular-nums">{reply.reply_count}</span>}
+            </span>
+          </div>
+        </div>
+      </div>
+      {reply.reply_count > 0 && (
+        <SubReplyPreview commentId={reply.id} replyCount={reply.reply_count} />
+      )}
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar respuesta?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. Se eliminará la respuesta y todas sus sub-respuestas.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => onDelete(reply.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  )
+}
+
 export function ReplyThread({ commentId, postId, initialReplies, currentUserId, isAdmin = false }: Props) {
   const [replies, setReplies] = useState<Reply[]>(initialReplies as Reply[])
   const [text, setText] = useState('')
   const [isPending, startTransition] = useTransition()
+  const router = useRouter()
+  const stop = (e: React.MouseEvent) => e.stopPropagation()
 
   async function reload() {
     const data = await getCommentReplies(commentId)
@@ -114,50 +238,16 @@ export function ReplyThread({ commentId, postId, initialReplies, currentUserId, 
         const canDelete = currentUserId === reply.user_id || isAdmin
         const initials = (reply.profiles.display_name ?? reply.profiles.username).slice(0, 2).toUpperCase()
         return (
-          <div key={reply.id} className="flex gap-3 py-3 border-b border-border/50 group/reply">
-            <Link href={`/profile/${reply.profiles.username}`} className="shrink-0">
-              <Avatar className="h-9 w-9">
-                <AvatarImage src={reply.profiles.avatar_url ?? undefined} />
-                <AvatarFallback className="bg-primary/20 text-primary text-sm font-bold">{initials}</AvatarFallback>
-              </Avatar>
-            </Link>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-1.5 mb-0.5">
-                <Link href={`/profile/${reply.profiles.username}`} className="font-semibold text-sm hover:text-primary transition-colors">
-                  {reply.profiles.display_name ?? reply.profiles.username}
-                </Link>
-                <span className="text-xs text-muted-foreground">@{reply.profiles.username}</span>
-                <span className="text-xs text-muted-foreground">·</span>
-                <span className="text-xs text-muted-foreground">{timeAgo(reply.created_at)}</span>
-                {canDelete && (
-                  <button onClick={() => handleDelete(reply.id)}
-                    className="ml-auto opacity-0 group-hover/reply:opacity-100 p-1 rounded text-muted-foreground hover:text-destructive transition-all">
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
-              <p className="text-sm text-foreground/90 leading-relaxed break-words mb-2">{reply.content}</p>
-              <div className="flex items-center gap-4">
-                {currentUserId ? (
-                  <button onClick={() => handleLike(reply.id)}
-                    className={`flex items-center gap-1.5 text-sm transition-colors ${reply.user_has_liked ? 'text-rose-400' : 'text-muted-foreground hover:text-rose-400'}`}>
-                    <Heart className="h-4 w-4" fill={reply.user_has_liked ? 'currentColor' : 'none'} />
-                    {reply.like_count > 0 && <span className="tabular-nums">{reply.like_count}</span>}
-                  </button>
-                ) : (
-                  <Link href="/register" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-rose-400 transition-colors">
-                    <Heart className="h-4 w-4" />
-                    {reply.like_count > 0 && <span className="tabular-nums">{reply.like_count}</span>}
-                  </Link>
-                )}
-                <Link href={`/reply/${reply.id}`}
-                  className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors">
-                  <MessageCircle className="h-4 w-4" />
-                  {reply.reply_count > 0 && <span className="tabular-nums">{reply.reply_count}</span>}
-                </Link>
-              </div>
-            </div>
-          </div>
+          <ReplyRow
+            key={reply.id}
+            reply={reply}
+            canDelete={canDelete}
+            initials={initials}
+            router={router}
+            stop={stop}
+            currentUserId={currentUserId}
+            onDelete={handleDelete}
+          />
         )
       })}
     </div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useTransition } from 'react'
+import { useState, useTransition } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Heart, MessageCircle, MoreHorizontal, Trash2 } from 'lucide-react'
@@ -13,6 +13,16 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '@/components/ui/dropdown-menu'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { deletePost } from '@/actions/posts'
 import type { Profile } from '@/types/database'
 
@@ -31,6 +41,7 @@ interface Props {
   currentUserId?: string
   isAdmin?: boolean
   hideComments?: boolean
+  flat?: boolean
 }
 
 function timeAgo(dateStr: string): string {
@@ -42,12 +53,13 @@ function timeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
 }
 
-export function PostCard({ post, currentUserId, isAdmin = false, hideComments = false }: Props) {
+export function PostCard({ post, currentUserId, isAdmin = false, hideComments = false, flat = false }: Props) {
   const { profiles: profile } = post
   const initials = (profile.display_name ?? profile.username).slice(0, 2).toUpperCase()
   const canDelete = currentUserId === profile.id || isAdmin
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [confirmOpen, setConfirmOpen] = useState(false)
 
   function handleDelete() {
     startTransition(async () => {
@@ -56,11 +68,16 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
     })
   }
 
+  const stop = (e: React.MouseEvent) => e.stopPropagation()
+
   return (
-    <article className="bg-card border border-border rounded-xl p-4 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-200">
+    <article
+      onClick={() => !flat && router.push(`/post/${post.id}`)}
+      className={flat ? '' : 'bg-card border border-border rounded-xl p-4 shadow-sm hover:border-primary/40 hover:shadow-md hover:shadow-primary/10 transition-all duration-200 cursor-pointer'}
+    >
       {/* Author row */}
       <div className="flex items-center gap-3 mb-3">
-        <Link href={`/profile/${profile.username}`}>
+        <Link href={`/profile/${profile.username}`} onClick={stop}>
           <Avatar className="h-9 w-9">
             <AvatarImage src={profile.avatar_url ?? undefined} />
             <AvatarFallback className="bg-primary/20 text-primary text-sm font-bold">
@@ -72,6 +89,7 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
           <div className="flex items-center gap-1.5 flex-wrap">
             <Link
               href={`/profile/${profile.username}`}
+              onClick={stop}
               className="font-semibold text-sm hover:text-primary transition-colors"
             >
               {profile.display_name ?? profile.username}
@@ -79,7 +97,7 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
             <span className="text-muted-foreground text-xs">@{profile.username}</span>
           </div>
         </div>
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex items-center gap-1 shrink-0" onClick={stop}>
           <span className="text-muted-foreground text-xs">{timeAgo(post.created_at)}</span>
           {canDelete && (
             <DropdownMenu>
@@ -92,7 +110,7 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
               <DropdownMenuContent side="bottom" align="end">
                 <DropdownMenuItem
                   variant="destructive"
-                  onClick={handleDelete}
+                  onClick={(e) => { e.stopPropagation(); setConfirmOpen(true) }}
                   disabled={isPending}
                 >
                   <Trash2 className="h-4 w-4" />
@@ -104,15 +122,12 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
         </div>
       </div>
 
-      {/* Content — click goes to post page */}
-      <Link href={`/post/${post.id}`} className="block mb-3 group/content">
-        <p className="text-sm leading-relaxed whitespace-pre-wrap break-words text-foreground/90 group-hover/content:text-foreground transition-colors">
-          {post.content}
-        </p>
-      </Link>
+      <p className="text-sm leading-relaxed whitespace-pre-wrap break-words text-foreground/90 mb-3">
+        {post.content}
+      </p>
 
       {/* Footer */}
-      <div className="flex items-center gap-3 pt-2 border-t border-border/50">
+      <div className="flex items-center gap-3 pt-2 border-t border-border/50" onClick={stop}>
         {currentUserId ? (
           <LikeButton
             postId={post.id}
@@ -129,24 +144,39 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
           </Link>
         )}
 
-        {/* Comment bubble — always a link to post page */}
         {!hideComments && (
-          <Link
-            href={`/post/${post.id}`}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground px-1 hover:text-primary transition-colors"
-          >
-            <MessageCircle className="h-4 w-4" />
+          <span className="group flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
+            <MessageCircle className="h-4 w-4 transition-transform group-hover:scale-110" />
             {post.comment_count != null && (
               <span className="tabular-nums">{post.comment_count}</span>
             )}
-          </Link>
+          </span>
         )}
       </div>
 
-      {/* 1 comment preview — compact, inside the card */}
       {!hideComments && (post.comment_count ?? 0) > 0 && (
         <CommentPreview postId={post.id} commentCount={post.comment_count ?? 0} />
       )}
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent onClick={stop}>
+          <AlertDialogHeader>
+            <AlertDialogTitle>¿Eliminar post?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Esta acción no se puede deshacer. Se eliminará el post y todas sus respuestas.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDelete}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Eliminar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </article>
   )
 }

@@ -8,21 +8,23 @@ interface Props {
   postId: string
   initialLiked: boolean
   initialCount: number
+  onToggle?: (id: string) => Promise<void>
 }
 
-export function LikeButton({ postId, initialLiked, initialCount }: Props) {
+export function LikeButton({ postId, initialLiked, initialCount, onToggle }: Props) {
   const [liked, setLiked] = useState(initialLiked)
   const [count, setCount] = useState(initialCount)
   const [isPending, startTransition] = useTransition()
 
-  function handleClick() {
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation()
     const wasLiked = liked
     setLiked(!wasLiked)
     setCount((c) => (wasLiked ? c - 1 : c + 1))
 
     startTransition(async () => {
       try {
-        await toggleLike(postId)
+        await (onToggle ? onToggle(postId) : toggleLike(postId))
       } catch {
         setLiked(wasLiked)
         setCount((c) => (wasLiked ? c + 1 : c - 1))

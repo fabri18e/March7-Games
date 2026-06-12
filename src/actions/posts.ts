@@ -153,20 +153,34 @@ export async function addComment(postId: string, content: string, parentId?: str
   revalidatePath('/', 'layout')
 }
 
+async function deleteCommentCascade(db: Awaited<ReturnType<typeof createClient>>, commentId: string): Promise<void> {
+  const { data: children } = await db.from('comments').select('id').eq('parent_id', commentId)
+  for (const child of children ?? []) {
+    await deleteCommentCascade(db, child.id)
+  }
+  await db.from('comment_likes').delete().eq('comment_id', commentId)
+  await db.from('comments').delete().eq('id', commentId)
+}
+
 export async function deleteComment(commentId: string): Promise<void> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return
   const { data: profile } = await supabase.from('profiles').select('is_admin').eq('id', user.id).single()
-  if (profile?.is_admin) {
+
+  const isAdmin = profile?.is_admin ?? false
+  const { data: comment } = await supabase.from('comments').select('user_id').eq('id', commentId).single()
+  if (!isAdmin && comment?.user_id !== user.id) return
+
+  if (isAdmin) {
     const admin = createAdminClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
       { auth: { autoRefreshToken: false, persistSession: false } }
     )
-    await admin.from('comments').delete().eq('id', commentId)
+    await deleteCommentCascade(admin as unknown as Awaited<ReturnType<typeof createClient>>, commentId)
   } else {
-    await supabase.from('comments').delete().eq('id', commentId).eq('user_id', user.id)
+    await deleteCommentCascade(supabase, commentId)
   }
   revalidatePath('/', 'layout')
 }
@@ -188,9 +202,13 @@ export async function deletePost(postId: string): Promise<void> {
       process.env.SUPABASE_SERVICE_ROLE_KEY!,
       { auth: { autoRefreshToken: false, persistSession: false } }
     )
+    await admin.from('comment_likes').delete().eq('comment_id', postId)
+    await admin.from('comments').delete().eq('post_id', postId)
     await admin.from('likes').delete().eq('post_id', postId)
     await admin.from('posts').delete().eq('id', postId)
   } else {
+    await supabase.from('comment_likes').delete().eq('comment_id', postId)
+    await supabase.from('comments').delete().eq('post_id', postId)
     await supabase.from('likes').delete().eq('post_id', postId)
     await supabase.from('posts').delete().eq('id', postId).eq('user_id', user.id)
   }

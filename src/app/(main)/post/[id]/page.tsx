@@ -49,7 +49,6 @@ export default async function PostPage({ params }: Props) {
         Volver
       </Link>
 
-      {/* Original post */}
       <PostCard
         post={post as Parameters<typeof PostCard>[0]['post']}
         currentUserId={user?.id}
@@ -57,7 +56,6 @@ export default async function PostPage({ params }: Props) {
         hideComments
       />
 
-      {/* Replies — Twitter stream style, no card wrapper */}
       <CommentSection
         postId={id}
         currentUserId={user?.id}
