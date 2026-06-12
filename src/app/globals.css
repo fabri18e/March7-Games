@@ -1,0 +1,111 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --font-sans: var(--font-geist-sans);
+}
+
+/* Light mode base (not used — dark-only app) */
+:root {
+  --radius: 0.75rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.65 0.22 295);
+  --primary-foreground: oklch(0.97 0.003 270);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0.97 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.62 0.21 27);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.65 0.22 295);
+}
+
+/* Dark gaming theme — active because html has class="dark" */
+.dark {
+  --background: oklch(0.09 0.012 248);
+  --foreground: oklch(0.97 0.003 248);
+
+  --card: oklch(0.12 0.010 248);
+  --card-foreground: oklch(0.97 0.003 248);
+
+  --popover: oklch(0.13 0.010 248);
+  --popover-foreground: oklch(0.97 0.003 248);
+
+  /* Primary: March7 blue */
+  --primary: oklch(0.58 0.21 258);
+  --primary-foreground: oklch(0.97 0.003 248);
+
+  --secondary: oklch(0.17 0.010 248);
+  --secondary-foreground: oklch(0.97 0.003 248);
+
+  --muted: oklch(0.17 0.010 248);
+  --muted-foreground: oklch(0.58 0.010 248);
+
+  --accent: oklch(0.19 0.010 248);
+  --accent-foreground: oklch(0.97 0.003 248);
+
+  --destructive: oklch(0.62 0.21 27);
+
+  --border: oklch(0.22 0.010 248);
+  --input: oklch(0.18 0.010 248);
+  --ring: oklch(0.58 0.21 258);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  html {
+    @apply font-sans;
+    color-scheme: dark;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: oklch(0.09 0.012 248); }
+::-webkit-scrollbar-thumb { background: oklch(0.22 0.010 248); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: oklch(0.35 0.012 248); }
+
+.scrollbar-none { scrollbar-width: none; }
+.scrollbar-none::-webkit-scrollbar { display: none; }
+
+button, [role="button"], a { cursor: pointer; }
