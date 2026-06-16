@@ -101,7 +101,7 @@ export default async function ProfilePage({ params }: Props) {
 
   const isOwner = currentUser?.id === profile.id
   const initials = profile.username.slice(0, 2).toUpperCase()
-  const joinedDate = new Date(profile.created_at).toLocaleDateString('es-ES', {
+  const joinedDate = new Date(profile.created_at).toLocaleDateString('en-US', {
     month: 'long',
     year: 'numeric',
   })
@@ -144,7 +144,7 @@ export default async function ProfilePage({ params }: Props) {
             ) : (
               <Link href="/register">
                 <button className="px-4 py-1.5 rounded-full text-sm font-semibold border border-border hover:bg-accent transition-colors">
-                  Seguir
+                  Follow
                 </button>
               </Link>
             )}
@@ -180,7 +180,7 @@ export default async function ProfilePage({ params }: Props) {
         {/* Joined date */}
         <div className="flex items-center gap-1.5 text-muted-foreground text-xs mb-4">
           <CalendarDays className="h-3.5 w-3.5" />
-          <span>Se unió en {joinedDate}</span>
+          <span>Joined {joinedDate}</span>
         </div>
 
         <Separator className="mb-4" />
@@ -189,11 +189,11 @@ export default async function ProfilePage({ params }: Props) {
         <div className="flex items-center gap-6 text-sm">
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-foreground">{followersCount ?? 0}</span>
-            <span className="text-muted-foreground">seguidores</span>
+            <span className="text-muted-foreground">followers</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-foreground">{followingCount ?? 0}</span>
-            <span className="text-muted-foreground">siguiendo</span>
+            <span className="text-muted-foreground">following</span>
           </div>
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-foreground">{postsCount ?? 0}</span>
@@ -201,7 +201,7 @@ export default async function ProfilePage({ params }: Props) {
           </div>
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-foreground">{gamesCount ?? 0}</span>
-            <span className="text-muted-foreground">juegos</span>
+            <span className="text-muted-foreground">games</span>
           </div>
         </div>
       </div>
@@ -216,7 +216,7 @@ export default async function ProfilePage({ params }: Props) {
             </TabsTrigger>
             <TabsTrigger value="games" className="flex-1 rounded-none pb-3 gap-2">
               <Gamepad2 className="h-4 w-4" />
-              Juegos
+              Games
             </TabsTrigger>
           </TabsList>
 
@@ -228,11 +228,11 @@ export default async function ProfilePage({ params }: Props) {
                     <Newspaper className="h-5 w-5 text-primary" />
                   </div>
                   <p className="font-medium text-sm">
-                    {isOwner ? 'Aún no has publicado nada' : 'Sin publicaciones aún'}
+                    {isOwner ? "You haven't posted anything yet" : 'No posts yet'}
                   </p>
                   {isOwner && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      Ve al inicio para crear tu primer post
+                      Go to home to create your first post
                     </p>
                   )}
                 </CardContent>
@@ -258,15 +258,15 @@ export default async function ProfilePage({ params }: Props) {
                 {gamesCount === 0 ? (
                   <>
                     <p className="font-medium text-sm">
-                      {isOwner ? 'Aún no has subido juegos' : 'Sin juegos aún'}
+                      {isOwner ? "You haven't uploaded any games yet" : 'No games yet'}
                     </p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {isOwner ? 'Sube tu primer juego en la Fase 5' : 'Este usuario no tiene juegos aún'}
+                      {isOwner ? 'Upload your first game in Phase 5' : 'This user has no games yet'}
                     </p>
                   </>
                 ) : (
                   <p className="text-sm text-muted-foreground">
-                    Los juegos se muestran en la Fase 5
+                    Games are shown in Phase 5
                   </p>
                 )}
               </CardContent>

@@ -43,9 +43,9 @@ export default async function FeedPage() {
             <div className="h-14 w-14 rounded-2xl bg-primary/10 flex items-center justify-center">
               <Gamepad2 className="h-7 w-7 text-primary" />
             </div>
-            <p className="font-semibold">Aún no hay publicaciones</p>
+            <p className="font-semibold">No posts yet</p>
             <p className="text-sm text-muted-foreground max-w-xs">
-              {user ? '¡Sé el primero en publicar algo!' : 'Regístrate para publicar.'}
+              {user ? 'Be the first to post something!' : 'Sign up to post.'}
             </p>
           </div>
         ) : (
@@ -65,7 +65,7 @@ export default async function FeedPage() {
           <CardContent className="pt-4">
             <div className="flex items-center gap-2 mb-4">
               <Flame className="h-4 w-4 text-primary" />
-              <h2 className="font-bold text-sm">Jugadores activos</h2>
+              <h2 className="font-bold text-sm">Active players</h2>
             </div>
             <Suspense
               fallback={

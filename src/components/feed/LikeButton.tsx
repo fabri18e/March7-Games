@@ -36,15 +36,11 @@ export function LikeButton({ postId, initialLiked, initialCount, onToggle }: Pro
     <button
       onClick={handleClick}
       disabled={isPending}
-      className={`group flex items-center gap-1.5 text-sm rounded-full px-2 py-1 -ml-2 transition-colors hover:text-red-500 hover:bg-red-500/10 ${
+      className={`flex items-center gap-1.5 text-sm rounded-full px-2 py-1 -ml-2 transition-colors hover:text-red-500 hover:bg-red-500/10 ${
         liked ? 'text-red-500' : 'text-muted-foreground'
       }`}
     >
-      <Heart
-        className={`h-4 w-4 transition-transform group-hover:scale-110 ${
-          liked ? 'fill-current' : ''
-        }`}
-      />
+      <Heart className={`h-4 w-4 ${liked ? 'fill-current' : ''}`} />
       <span className="tabular-nums">{count}</span>
     </button>
   )

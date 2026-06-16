@@ -31,7 +31,7 @@ export function ProfileMenu({ userId }: Props) {
     <DropdownMenu>
       <DropdownMenuTrigger
         className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-        aria-label="Opciones"
+        aria-label="Options"
       >
         <MoreHorizontal className="h-4 w-4" />
       </DropdownMenuTrigger>
@@ -42,7 +42,7 @@ export function ProfileMenu({ userId }: Props) {
           disabled={isPending}
         >
           <Trash2 className="h-4 w-4" />
-          Eliminar usuario
+          Delete user
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

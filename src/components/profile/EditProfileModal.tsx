@@ -26,7 +26,7 @@ function SaveButton() {
   return (
     <Button type="submit" disabled={pending} className="gap-2">
       {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-      {pending ? 'Guardando...' : 'Guardar cambios'}
+      {pending ? 'Saving...' : 'Save changes'}
     </Button>
   )
 }
@@ -45,7 +45,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
     if (state?.success && state !== handledStateRef.current) {
       handledStateRef.current = state
       setOpen(false)
-      toast.success('Perfil actualizado correctamente')
+      toast.success('Profile updated successfully')
       if (state.username && state.username !== profile.username) {
         router.push(`/profile/${state.username}`)
       } else {
@@ -59,11 +59,11 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
     if (!file) return
 
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
-      toast.error('Solo se permiten imágenes JPG, PNG o WEBP')
+      toast.error('Only JPG, PNG, or WEBP images are allowed')
       return
     }
     if (file.size > 2 * 1024 * 1024) {
-      toast.error('La imagen no puede superar los 2MB')
+      toast.error('The image cannot be larger than 2MB')
       return
     }
 
@@ -79,7 +79,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
         toast.error(result.error)
         setAvatarPreview(null)
       } else {
-        toast.success('Avatar actualizado')
+        toast.success('Avatar updated')
       }
     })
   }
@@ -94,12 +94,12 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
         }
       >
         <Pencil className="h-3.5 w-3.5" />
-        Editar perfil
+        Edit profile
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Editar perfil</DialogTitle>
+          <DialogTitle>Edit profile</DialogTitle>
         </DialogHeader>
 
         {/* Avatar section */}
@@ -107,7 +107,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
           <div
             className="relative group cursor-pointer"
             onClick={() => !isUploading && fileInputRef.current?.click()}
-            title="Cambiar foto de perfil"
+            title="Change profile picture"
           >
             <Avatar className="h-20 w-20 ring-2 ring-border">
               <AvatarImage
@@ -158,29 +158,29 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
 
           <div className="space-y-2">
             <Label htmlFor="edit-display-name">
-              Nombre visible{' '}
-              <span className="text-muted-foreground text-xs">(opcional)</span>
+              Display name{' '}
+              <span className="text-muted-foreground text-xs">(optional)</span>
             </Label>
             <Input
               id="edit-display-name"
               name="display_name"
               defaultValue={profile.display_name ?? ''}
               maxLength={50}
-              placeholder="Tu nombre visible"
+              placeholder="Your display name"
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="edit-bio">
-              Biografía{' '}
-              <span className="text-muted-foreground text-xs">(opcional)</span>
+              Bio{' '}
+              <span className="text-muted-foreground text-xs">(optional)</span>
             </Label>
             <Textarea
               id="edit-bio"
               name="bio"
               defaultValue={profile.bio ?? ''}
               maxLength={300}
-              placeholder="Cuéntanos algo sobre ti..."
+              placeholder="Tell us something about yourself..."
               rows={3}
               className="resize-none"
             />
@@ -192,7 +192,7 @@ export function EditProfileModal({ profile }: { profile: Profile }) {
               variant="outline"
               onClick={() => setOpen(false)}
             >
-              Cancelar
+              Cancel
             </Button>
             <SaveButton />
           </div>

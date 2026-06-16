@@ -9,9 +9,9 @@ const geistSans = Geist({
 })
 
 export const metadata: Metadata = {
-  title: 'March7 Games — Juega, comparte, conecta',
+  title: 'March7 Games — Play, share, connect',
   description:
-    'La plataforma donde los gamers se encuentran, comparten sus creaciones y juegan juntos.',
+    'The platform where gamers meet, share their creations, and play together.',
 }
 
 export default function RootLayout({
@@ -20,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="es" className="dark" suppressHydrationWarning>
+    <html lang="en" className="dark" suppressHydrationWarning>
       <body className={`${geistSans.variable} font-sans antialiased`}>
         {children}
         <Toaster theme="dark" richColors position="top-right" />

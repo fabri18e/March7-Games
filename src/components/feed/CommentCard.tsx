@@ -46,11 +46,11 @@ interface Props {
 
 function timeAgo(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
-  if (diff < 60) return 'ahora'
+  if (diff < 60) return 'now'
   if (diff < 3600) return `${Math.floor(diff / 60)}m`
   if (diff < 86400) return `${Math.floor(diff / 3600)}h`
   if (diff < 604800) return `${Math.floor(diff / 86400)}d`
-  return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+  return new Date(dateStr).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
 }
 
 export function CommentCard({ comment, currentUserId, isAdmin = false }: Props) {
@@ -96,7 +96,7 @@ export function CommentCard({ comment, currentUserId, isAdmin = false }: Props) 
                 <DropdownMenuContent side="bottom" align="end">
                   <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
                     <Trash2 className="h-4 w-4" />
-                    Eliminar
+                    Delete
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -127,18 +127,18 @@ export function CommentCard({ comment, currentUserId, isAdmin = false }: Props) 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar respuesta?</AlertDialogTitle>
+            <AlertDialogTitle>Delete reply?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción no se puede deshacer. Se eliminará la respuesta y todas sus sub-respuestas.
+              This action cannot be undone. This will delete the reply and all its sub-replies.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Eliminar
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

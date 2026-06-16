@@ -3,7 +3,7 @@
 import { useState, useTransition, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Send, Trash2, MessageCircle, MoreHorizontal } from 'lucide-react'
+import { Send, Trash2, MessageCircle, MoreHorizontal, Heart } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LikeButton } from './LikeButton'
 import {
@@ -54,11 +54,11 @@ interface Props {
 
 function timeAgo(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
-  if (diff < 60) return 'ahora'
+  if (diff < 60) return 'now'
   if (diff < 3600) return `${Math.floor(diff / 60)}m`
   if (diff < 86400) return `${Math.floor(diff / 3600)}h`
   if (diff < 604800) return `${Math.floor(diff / 86400)}d`
-  return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+  return new Date(dateStr).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
 }
 
 function buildTree(flat: RawComment[]): CommentWithReplies[] {
@@ -174,7 +174,7 @@ function CommentRow({
                   <DropdownMenuContent side="bottom" align="end">
                     <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
                       <Trash2 className="h-4 w-4" />
-                      Eliminar
+                      Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -201,8 +201,8 @@ function CommentRow({
               </Link>
             )}
 
-            <span className="group flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
-              <MessageCircle className="h-4 w-4 transition-transform group-hover:scale-110" />
+            <span className="flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
+              <MessageCircle className="h-4 w-4" />
               {comment.reply_count > 0 && <span className="tabular-nums">{comment.reply_count}</span>}
             </span>
           </div>
@@ -212,18 +212,18 @@ function CommentRow({
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar comentario?</AlertDialogTitle>
+            <AlertDialogTitle>Delete comment?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción no se puede deshacer. Se eliminará el comentario y todas sus respuestas.
+              This action cannot be undone. This will delete the comment and all its replies.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => onDelete(comment.id)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Eliminar
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -292,7 +292,7 @@ export function CommentSection({ postId, currentUserId, isAdmin = false, preview
           </p>
         </div>
         {hiddenCount > 0 && (
-          <p className="text-xs text-primary mt-1 pl-7">Ver {hiddenCount} respuesta{hiddenCount !== 1 ? 's' : ''} más</p>
+          <p className="text-xs text-primary mt-1 pl-7">See {hiddenCount} more repl{hiddenCount !== 1 ? 'ies' : 'y'}</p>
         )}
       </Link>
     )
@@ -309,7 +309,7 @@ export function CommentSection({ postId, currentUserId, isAdmin = false, preview
           <div className="w-9 shrink-0" />
           <div className="flex-1 flex gap-2">
             <input
-              placeholder="Escribe un comentario..."
+              placeholder="Write a comment..."
               maxLength={400}
               onKeyDown={e => {
                 if (e.key === 'Enter' && !e.shiftKey) {
@@ -336,7 +336,7 @@ export function CommentSection({ postId, currentUserId, isAdmin = false, preview
       ) : (
         <div className="py-3 border-b border-border/50">
           <Link href="/register" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-            Inicia sesión para responder
+            Log in to reply
           </Link>
         </div>
       )}
@@ -353,7 +353,7 @@ export function CommentSection({ postId, currentUserId, isAdmin = false, preview
       )}
 
       {loaded && topLevel.length === 0 && (
-        <p className="text-sm text-muted-foreground py-6 text-center">Sin respuestas aún. ¡Sé el primero!</p>
+        <p className="text-sm text-muted-foreground py-6 text-center">No replies yet. Be the first!</p>
       )}
 
       {/* Comment stream */}
@@ -388,7 +388,7 @@ export function CommentSection({ postId, currentUserId, isAdmin = false, preview
                   {last.content}
                 </p>
                 {extra > 0 && (
-                  <span className="text-xs text-violet-400 hover:text-violet-300 shrink-0 transition-colors">Ver {extra} más →</span>
+                  <span className="text-xs text-violet-400 hover:text-violet-300 shrink-0 transition-colors">See {extra} more →</span>
                 )}
               </Link>
             )

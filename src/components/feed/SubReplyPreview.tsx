@@ -48,7 +48,7 @@ export function SubReplyPreview({ commentId, replyCount }: Props) {
         {last.content}
       </p>
       {extra > 0 && (
-        <span className="text-xs text-violet-400 hover:text-violet-300 shrink-0 transition-colors">Ver {extra} más →</span>
+        <span className="text-xs text-violet-400 hover:text-violet-300 shrink-0 transition-colors">See {extra} more →</span>
       )}
     </Link>
   )

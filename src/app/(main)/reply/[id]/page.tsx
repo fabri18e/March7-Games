@@ -31,13 +31,13 @@ export default async function ReplyPage({ params }: Props) {
               className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
-              Respuesta anterior
+              Previous reply
             </Link>
             <Link
               href={`/post/${comment.post_id}`}
               className="inline-flex items-center gap-2 text-sm text-primary/70 hover:text-primary transition-colors"
             >
-              Volver al post
+              Back to post
             </Link>
           </>
         ) : (
@@ -46,7 +46,7 @@ export default async function ReplyPage({ params }: Props) {
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            Volver al post
+            Back to post
           </Link>
         )}
       </div>

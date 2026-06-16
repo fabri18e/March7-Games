@@ -41,21 +41,21 @@ export default function AuthLayout({
         {/* Hero content */}
         <div className="relative z-10 flex-1 flex flex-col justify-center px-8 pb-8">
           <h1 className="text-4xl font-bold leading-tight mb-4">
-            Juega, comparte,
+            Play, share,
             <br />
-            <span className="text-primary">conecta.</span>
+            <span className="text-primary">connect.</span>
           </h1>
           <p className="text-muted-foreground text-base leading-relaxed mb-8 max-w-xs">
-            La plataforma donde los gamers descubren juegos, comparten sus
-            creaciones y construyen comunidad.
+            The platform where gamers discover games, share their
+            creations, and build community.
           </p>
 
           <ul className="space-y-3">
             {[
-              'Juega directamente en el navegador, sin descargas',
-              'Comparte tus creaciones con la comunidad',
-              'Sigue a tus creadores favoritos',
-              'Descubre juegos independientes únicos',
+              'Play directly in your browser, no downloads',
+              'Share your creations with the community',
+              'Follow your favorite creators',
+              'Discover unique indie games',
             ].map((item) => (
               <li key={item} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                 <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />

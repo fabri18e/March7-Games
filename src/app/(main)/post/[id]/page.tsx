@@ -46,7 +46,7 @@ export default async function PostPage({ params }: Props) {
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors py-3"
       >
         <ArrowLeft className="h-4 w-4" />
-        Volver
+        Back
       </Link>
 
       <PostCard

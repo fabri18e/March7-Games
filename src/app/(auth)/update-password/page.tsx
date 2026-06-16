@@ -2,16 +2,16 @@ import type { Metadata } from 'next'
 import { UpdatePasswordForm } from '@/components/auth/UpdatePasswordForm'
 
 export const metadata: Metadata = {
-  title: 'Nueva contraseña — March7 Games',
+  title: 'New password — March7 Games',
 }
 
 export default function UpdatePasswordPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold tracking-tight">Nueva contraseña</h2>
+        <h2 className="text-2xl font-bold tracking-tight">New password</h2>
         <p className="text-muted-foreground mt-1.5">
-          Elige una contraseña segura para tu cuenta
+          Choose a secure password for your account
         </p>
       </div>
       <UpdatePasswordForm />

@@ -50,11 +50,11 @@ interface Props {
 
 function timeAgo(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
-  if (diff < 60) return 'ahora'
+  if (diff < 60) return 'now'
   if (diff < 3600) return `${Math.floor(diff / 60)}m`
   if (diff < 86400) return `${Math.floor(diff / 3600)}h`
   if (diff < 604800) return `${Math.floor(diff / 86400)}d`
-  return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+  return new Date(dateStr).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
 }
 
 function ReplyRow({
@@ -104,7 +104,7 @@ function ReplyRow({
                   <DropdownMenuContent side="bottom" align="end">
                     <DropdownMenuItem variant="destructive" onClick={() => setConfirmOpen(true)}>
                       <Trash2 className="h-4 w-4" />
-                      Eliminar
+                      Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
@@ -126,8 +126,8 @@ function ReplyRow({
                 <span className="tabular-nums">{reply.like_count}</span>
               </Link>
             )}
-            <span className="group flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
-              <MessageCircle className="h-4 w-4 transition-transform group-hover:scale-110" />
+            <span className="flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
+              <MessageCircle className="h-4 w-4" />
               {reply.reply_count > 0 && <span className="tabular-nums">{reply.reply_count}</span>}
             </span>
           </div>
@@ -140,18 +140,18 @@ function ReplyRow({
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar respuesta?</AlertDialogTitle>
+            <AlertDialogTitle>Delete reply?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción no se puede deshacer. Se eliminará la respuesta y todas sus sub-respuestas.
+              This action cannot be undone. This will delete the reply and all its sub-replies.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => onDelete(reply.id)}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Eliminar
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -209,7 +209,7 @@ export function ReplyThread({ commentId, postId, initialReplies, currentUserId, 
               value={text}
               onChange={e => setText(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleAdd() } }}
-              placeholder="Escribe una respuesta..."
+              placeholder="Write a reply..."
               maxLength={400}
               className="flex-1 text-sm bg-muted/40 border border-border rounded-full px-4 py-2 outline-none focus:border-primary/50 transition-colors placeholder:text-muted-foreground"
             />
@@ -225,13 +225,13 @@ export function ReplyThread({ commentId, postId, initialReplies, currentUserId, 
       ) : (
         <div className="py-3 border-b border-border/50">
           <Link href="/register" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-            Inicia sesión para responder
+            Log in to reply
           </Link>
         </div>
       )}
 
       {replies.length === 0 && (
-        <p className="text-sm text-muted-foreground py-6 text-center">Sin respuestas aún. ¡Sé el primero!</p>
+        <p className="text-sm text-muted-foreground py-6 text-center">No replies yet. Be the first!</p>
       )}
 
       {replies.map(reply => {

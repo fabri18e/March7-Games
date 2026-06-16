@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Home, Compass, Upload, User as UserIcon, ChevronsLeft, ChevronsRight, Settings, ShieldCheck, Eye } from 'lucide-react'
+import { Home, Compass, MessageSquare, Upload, User as UserIcon, ChevronsLeft, ChevronsRight, Settings, ShieldCheck, Eye } from 'lucide-react'
 import type { User } from '@supabase/supabase-js'
 import type { Profile } from '@/types/database'
 
@@ -19,15 +19,16 @@ export function LeftSidebar({ user, profile, isAdmin = false, previewMode = 'adm
   const pathname = usePathname()
 
   const navItems = [
-    { href: '/', icon: Home, label: 'Inicio' },
-    { href: '/explore', icon: Compass, label: 'Explorar' },
+    { href: '/', icon: Home, label: 'Home' },
+    { href: '/explore', icon: Compass, label: 'Explore' },
+    { href: '/feed', icon: MessageSquare, label: 'Feed' },
     {
       href: user && profile ? `/profile/${profile.username}` : '/register',
       icon: UserIcon,
-      label: 'Perfil',
+      label: 'Profile',
     },
-    { href: user ? '/games/upload' : '/register', icon: Upload, label: 'Subir juego' },
-    { href: '/settings', icon: Settings, label: 'Ajustes' },
+    { href: user ? '/games/upload' : '/register', icon: Upload, label: 'Upload game' },
+    { href: '/settings', icon: Settings, label: 'Settings' },
     ...(isAdmin ? [{ href: '/admin', icon: ShieldCheck, label: 'Admin' }] : []),
   ]
 
@@ -44,7 +45,7 @@ export function LeftSidebar({ user, profile, isAdmin = false, previewMode = 'adm
           className={`flex items-center rounded-lg text-sm font-medium text-primary bg-primary/10 hover:bg-primary/20 shadow-[inset_0_0_12px_rgba(139,92,246,0.08)] transition-colors w-full ${
             open ? 'px-3 py-2 justify-end' : 'justify-center p-2.5'
           }`}
-          title={open ? 'Colapsar' : 'Expandir'}
+          title={open ? 'Collapse' : 'Expand'}
         >
           {open ? <ChevronsLeft className="h-4 w-4 shrink-0" /> : <ChevronsRight className="h-4 w-4" />}
         </button>
@@ -82,7 +83,7 @@ export function LeftSidebar({ user, profile, isAdmin = false, previewMode = 'adm
             : 'bg-blue-500/10 text-blue-400'
         }`}>
           <Eye className="h-3 w-3 shrink-0" />
-          {open && <span>Modo {previewMode === 'guest' ? 'invitado' : 'usuario'}</span>}
+          {open && <span>{previewMode === 'guest' ? 'Guest mode' : 'User mode'}</span>}
         </div>
       )}
     </aside>

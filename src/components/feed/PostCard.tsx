@@ -46,11 +46,11 @@ interface Props {
 
 function timeAgo(dateStr: string): string {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
-  if (diff < 60) return 'ahora'
+  if (diff < 60) return 'now'
   if (diff < 3600) return `${Math.floor(diff / 60)}m`
   if (diff < 86400) return `${Math.floor(diff / 3600)}h`
   if (diff < 604800) return `${Math.floor(diff / 86400)}d`
-  return new Date(dateStr).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' })
+  return new Date(dateStr).toLocaleDateString('en-US', { day: 'numeric', month: 'short' })
 }
 
 export function PostCard({ post, currentUserId, isAdmin = false, hideComments = false, flat = false }: Props) {
@@ -103,7 +103,7 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
             <DropdownMenu>
               <DropdownMenuTrigger
                 className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
-                aria-label="Opciones"
+                aria-label="Options"
               >
                 <MoreHorizontal className="h-4 w-4" />
               </DropdownMenuTrigger>
@@ -114,7 +114,7 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
                   disabled={isPending}
                 >
                   <Trash2 className="h-4 w-4" />
-                  Eliminar post
+                  Delete post
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -145,8 +145,8 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
         )}
 
         {!hideComments && (
-          <span className="group flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
-            <MessageCircle className="h-4 w-4 transition-transform group-hover:scale-110" />
+          <span className="flex items-center gap-1.5 text-sm text-muted-foreground rounded-full px-2 py-1 -ml-2 transition-colors hover:text-primary hover:bg-primary/10">
+            <MessageCircle className="h-4 w-4" />
             {post.comment_count != null && (
               <span className="tabular-nums">{post.comment_count}</span>
             )}
@@ -161,18 +161,18 @@ export function PostCard({ post, currentUserId, isAdmin = false, hideComments = 
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent onClick={stop}>
           <AlertDialogHeader>
-            <AlertDialogTitle>¿Eliminar post?</AlertDialogTitle>
+            <AlertDialogTitle>Delete post?</AlertDialogTitle>
             <AlertDialogDescription>
-              Esta acción no se puede deshacer. Se eliminará el post y todas sus respuestas.
+              This action cannot be undone. This will delete the post and all its replies.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-              Eliminar
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

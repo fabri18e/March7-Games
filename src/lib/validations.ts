@@ -1,55 +1,55 @@
 import { z } from 'zod'
 
 export const loginSchema = z.object({
-  email: z.string().email('Email inválido'),
-  password: z.string().min(6, 'La contraseña debe tener al menos 6 caracteres'),
+  email: z.string().email('Invalid email'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
 })
 
 export const registerSchema = z
   .object({
     username: z
       .string()
-      .min(3, 'El username debe tener al menos 3 caracteres')
-      .max(30, 'El username no puede tener más de 30 caracteres')
-      .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guiones bajos'),
-    email: z.string().email('Email inválido'),
+      .min(3, 'Username must be at least 3 characters')
+      .max(30, 'Username cannot be more than 30 characters')
+      .regex(/^[a-zA-Z0-9_]+$/, 'Only letters, numbers, and underscores'),
+    email: z.string().email('Invalid email'),
     password: z
       .string()
-      .min(8, 'La contraseña debe tener al menos 8 caracteres')
-      .regex(/[A-Z]/, 'Debe contener al menos una letra mayúscula')
-      .regex(/[0-9]/, 'Debe contener al menos un número'),
+      .min(8, 'Password must be at least 8 characters')
+      .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+      .regex(/[0-9]/, 'Must contain at least one number'),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: 'Las contraseñas no coinciden',
+    message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
 
 export const forgotPasswordSchema = z.object({
-  email: z.string().email('Email inválido'),
+  email: z.string().email('Invalid email'),
 })
 
 export const postSchema = z.object({
   content: z
     .string()
-    .min(1, 'El post no puede estar vacío')
-    .max(400, 'Máximo 400 caracteres'),
+    .min(1, 'Post cannot be empty')
+    .max(400, 'Maximum 400 characters'),
 })
 
 export const profileSchema = z.object({
   username: z
     .string()
-    .min(3, 'Mínimo 3 caracteres')
-    .max(30, 'Máximo 30 caracteres')
-    .regex(/^[a-zA-Z0-9_]+$/, 'Solo letras, números y guiones bajos'),
+    .min(3, 'Must be at least 3 characters')
+    .max(30, 'Cannot be more than 30 characters')
+    .regex(/^[a-zA-Z0-9_]+$/, 'Only letters, numbers, and underscores'),
   display_name: z
     .string()
-    .max(50, 'Máximo 50 caracteres')
+    .max(50, 'Cannot be more than 50 characters')
     .optional()
     .or(z.literal('')),
   bio: z
     .string()
-    .max(300, 'Máximo 300 caracteres')
+    .max(300, 'Cannot be more than 300 characters')
     .optional()
     .or(z.literal('')),
 })
@@ -57,11 +57,11 @@ export const profileSchema = z.object({
 export const gameSchema = z.object({
   title: z
     .string()
-    .min(1, 'El título es requerido')
-    .max(100, 'Máximo 100 caracteres'),
+    .min(1, 'Title is required')
+    .max(100, 'Maximum 100 characters'),
   description: z
     .string()
-    .max(1000, 'Máximo 1000 caracteres')
+    .max(1000, 'Maximum 1000 characters')
     .optional()
     .or(z.literal('')),
 })

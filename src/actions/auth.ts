@@ -33,12 +33,12 @@ export async function signIn(
 
   if (error) {
     if (error.message.toLowerCase().includes('invalid login credentials')) {
-      return { error: 'Email o contraseña incorrectos' }
+      return { error: 'Incorrect email or password' }
     }
     if (error.message.toLowerCase().includes('email not confirmed')) {
-      return { error: 'Confirma tu email antes de iniciar sesión' }
+      return { error: 'Confirm your email before logging in' }
     }
-    return { error: 'Error al iniciar sesión. Intenta nuevamente.' }
+    return { error: 'Error logging in. Please try again.' }
   }
 
   redirect('/')
@@ -81,10 +81,10 @@ export async function signUp(
   // Block if username is taken by a DIFFERENT confirmed user
   // (if identities=[] it's the same unconfirmed user re-registering — handled below)
   if (existingUsername && data.user && existingUsername.id !== data.user.id) {
-    return { error: 'Este username ya está en uso' }
+    return { error: 'This username is already taken' }
   }
   if (existingUsername && !data.user) {
-    return { error: 'Este username ya está en uso' }
+    return { error: 'This username is already taken' }
   }
 
   if (error) {
@@ -95,15 +95,15 @@ export async function signUp(
       msg.includes('email address is already') ||
       msg.includes('user already registered')
     ) {
-      return { error: 'Este email ya está registrado' }
+      return { error: 'This email is already registered' }
     }
     if (msg.includes('password')) {
-      return { error: 'La contraseña no cumple los requisitos mínimos' }
+      return { error: 'Password does not meet the minimum requirements' }
     }
     if (msg.includes('rate limit') || msg.includes('too many')) {
-      return { error: 'Demasiados intentos. Espera unos minutos e inténtalo de nuevo.' }
+      return { error: 'Too many attempts. Wait a few minutes and try again.' }
     }
-    return { error: `Error al crear la cuenta: ${error.message}` }
+    return { error: `Error creating account: ${error.message}` }
   }
 
   // Supabase returns identities=[] when email exists but is unconfirmed
@@ -169,8 +169,8 @@ export async function resetPassword(
   )
 
   if (error) {
-    return { error: 'Error al enviar el email. Intenta nuevamente.' }
+    return { error: 'Error sending the email. Please try again.' }
   }
 
-  return { success: '¡Revisa tu email para restablecer tu contraseña!' }
+  return { success: 'Check your email to reset your password!' }
 }

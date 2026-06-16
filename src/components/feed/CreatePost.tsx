@@ -39,7 +39,7 @@ export function CreatePost({ profile }: Props) {
       {/* Header */}
       <div className="flex items-center gap-2 mb-3">
         <Gamepad2 className="h-4 w-4 text-primary" />
-        <span className="text-sm font-semibold text-primary">Nueva publicación</span>
+        <span className="text-sm font-semibold text-primary">New post</span>
       </div>
 
       <form ref={formRef} action={formAction}>
@@ -55,7 +55,7 @@ export function CreatePost({ profile }: Props) {
             <textarea
               ref={textareaRef}
               name="content"
-              placeholder="¿Qué estás jugando? Comparte tu experiencia..."
+              placeholder="What are you playing? Share your experience..."
               className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm placeholder:text-muted-foreground resize-none outline-none focus:border-primary/50 focus:bg-background transition-colors min-h-[80px] leading-relaxed"
               value={content}
               maxLength={400}
@@ -77,7 +77,7 @@ export function CreatePost({ profile }: Props) {
                   isOverLimit ? 'text-destructive' : charsLeft <= 50 ? 'text-amber-500' : 'text-muted-foreground'
                 }`}
               >
-                {charsLeft} caracteres restantes
+                {charsLeft} characters left
               </span>
               <Button
                 type="submit"
@@ -85,7 +85,7 @@ export function CreatePost({ profile }: Props) {
                 className="rounded-lg font-semibold px-5"
                 disabled={isPending || isEmpty || isOverLimit}
               >
-                {isPending ? 'Publicando...' : 'Publicar'}
+                {isPending ? 'Posting...' : 'Post'}
               </Button>
             </div>
           </div>

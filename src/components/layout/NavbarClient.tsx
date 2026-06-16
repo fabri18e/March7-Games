@@ -30,10 +30,10 @@ export function NavbarClient({ user, profile }: NavbarClientProps) {
     return (
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="sm" onClick={() => router.push('/login')}>
-          Iniciar sesión
+          Log in
         </Button>
         <Button size="sm" onClick={() => router.push('/register')}>
-          Registrarse
+          Sign up
         </Button>
       </div>
     )
@@ -49,7 +49,7 @@ export function NavbarClient({ user, profile }: NavbarClientProps) {
     <DropdownMenu>
       <DropdownMenuTrigger
         className="relative h-8 w-8 rounded-full outline-none ring-offset-background focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 cursor-pointer"
-        aria-label="Menú de usuario"
+        aria-label="User menu"
       >
         {isPending ? (
           <div className="h-8 w-8 flex items-center justify-center">
@@ -72,7 +72,7 @@ export function NavbarClient({ user, profile }: NavbarClientProps) {
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col gap-0.5">
             <span className="font-semibold text-sm">
-              @{profile?.username ?? 'usuario'}
+              @{profile?.username ?? 'user'}
             </span>
             <span className="text-xs text-muted-foreground truncate">
               {user.email}
@@ -87,7 +87,7 @@ export function NavbarClient({ user, profile }: NavbarClientProps) {
           onClick={() => router.push(`/profile/${profile?.username}`)}
         >
           <UserIcon className="mr-2 h-4 w-4" />
-          Mi perfil
+          My profile
         </DropdownMenuItem>
 
         <DropdownMenuItem
@@ -95,7 +95,7 @@ export function NavbarClient({ user, profile }: NavbarClientProps) {
           onClick={() => router.push('/settings')}
         >
           <Settings className="mr-2 h-4 w-4" />
-          Configuración
+          Settings
         </DropdownMenuItem>
 
         <DropdownMenuSeparator />
@@ -107,7 +107,7 @@ export function NavbarClient({ user, profile }: NavbarClientProps) {
           disabled={isPending}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          Cerrar sesión
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

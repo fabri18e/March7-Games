@@ -15,7 +15,7 @@ function SubmitButton() {
   return (
     <Button type="submit" disabled={pending} className="w-full gap-2">
       {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-      {pending ? 'Creando cuenta...' : 'Crear cuenta'}
+      {pending ? 'Creating account...' : 'Create account'}
     </Button>
   )
 }
@@ -37,17 +37,17 @@ export function RegisterForm() {
           <Mail className="h-7 w-7 text-primary" />
         </div>
         <div>
-          <h3 className="font-bold text-lg">Revisa tu email</h3>
+          <h3 className="font-bold text-lg">Check your email</h3>
           <p className="text-sm text-muted-foreground mt-1 max-w-xs">
-            Te enviamos un enlace de confirmación a{' '}
+            We sent a confirmation link to{' '}
             <span className="font-medium text-foreground">{fields.email}</span>.
-            Haz clic en él para activar tu cuenta.
+            Click it to activate your account.
           </p>
         </div>
         <p className="text-xs text-muted-foreground">
-          ¿Ya confirmaste?{' '}
+          Already confirmed?{' '}
           <Link href="/login" className="text-primary hover:underline font-medium">
-            Inicia sesión
+            Log in
           </Link>
         </p>
       </div>
@@ -72,7 +72,7 @@ export function RegisterForm() {
             id="username"
             name="username"
             type="text"
-            placeholder="tu_username"
+            placeholder="your_username"
             required
             autoComplete="username"
             className="pl-9"
@@ -84,7 +84,7 @@ export function RegisterForm() {
           />
         </div>
         <p className="text-xs text-muted-foreground">
-          3-30 caracteres. Solo letras, números y guiones bajos.
+          3-30 characters. Letters, numbers, and underscores only.
         </p>
       </div>
 
@@ -94,7 +94,7 @@ export function RegisterForm() {
           id="email"
           name="email"
           type="email"
-          placeholder="tu@email.com"
+          placeholder="you@email.com"
           required
           autoComplete="email"
           value={fields.email}
@@ -103,7 +103,7 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Contraseña</Label>
+        <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -126,12 +126,12 @@ export function RegisterForm() {
           </button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Mínimo 8 caracteres, una mayúscula y un número.
+          Minimum 8 characters, one uppercase letter, and one number.
         </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirmPassword">Confirmar contraseña</Label>
+        <Label htmlFor="confirmPassword">Confirm password</Label>
         <div className="relative">
           <Input
             id="confirmPassword"
@@ -157,9 +157,9 @@ export function RegisterForm() {
       <SubmitButton />
 
       <p className="text-center text-sm text-muted-foreground">
-        ¿Ya tienes cuenta?{' '}
+        Already have an account?{' '}
         <Link href="/login" className="text-primary hover:underline font-medium">
-          Inicia sesión
+          Log in
         </Link>
       </p>
     </form>

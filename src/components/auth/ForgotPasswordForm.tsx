@@ -15,7 +15,7 @@ function SubmitButton() {
   return (
     <Button type="submit" disabled={pending} className="w-full gap-2">
       {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-      {pending ? 'Enviando...' : 'Enviar instrucciones'}
+      {pending ? 'Sending...' : 'Send instructions'}
     </Button>
   )
 }
@@ -32,13 +32,13 @@ export function ForgotPasswordForm() {
           </div>
         </div>
         <div className="space-y-2">
-          <p className="font-medium text-foreground">¡Email enviado!</p>
+          <p className="font-medium text-foreground">Email sent!</p>
           <p className="text-sm text-muted-foreground">{state.success}</p>
         </div>
         <Link href="/login">
           <Button variant="outline" className="w-full gap-2">
             <ArrowLeft className="h-4 w-4" />
-            Volver al inicio de sesión
+            Back to login
           </Button>
         </Link>
       </div>
@@ -59,7 +59,7 @@ export function ForgotPasswordForm() {
           id="email"
           name="email"
           type="email"
-          placeholder="tu@email.com"
+          placeholder="you@email.com"
           required
           autoComplete="email"
         />
@@ -70,7 +70,7 @@ export function ForgotPasswordForm() {
       <Link href="/login">
         <Button variant="ghost" className="w-full gap-2">
           <ArrowLeft className="h-4 w-4" />
-          Volver al inicio de sesión
+          Back to login
         </Button>
       </Link>
     </form>

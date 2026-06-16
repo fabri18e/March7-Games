@@ -19,7 +19,7 @@ export async function createPost(
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'Debes iniciar sesión para publicar' }
+  if (!user) return { error: 'You must be logged in to post' }
 
   const result = postSchema.safeParse({ content: formData.get('content') })
   if (!result.success) return { error: result.error.errors[0].message }
@@ -28,7 +28,7 @@ export async function createPost(
     .from('posts')
     .insert({ user_id: user.id, content: result.data.content })
 
-  if (error) return { error: 'Error al publicar. Intenta de nuevo.' }
+  if (error) return { error: 'Error posting. Please try again.' }
 
   revalidatePath('/')
   return { success: true }

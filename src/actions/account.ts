@@ -9,13 +9,13 @@ const passwordSchema = z
   .object({
     password: z
       .string()
-      .min(8, 'Mínimo 8 caracteres')
-      .regex(/[A-Z]/, 'Debe contener al menos una mayúscula')
-      .regex(/[0-9]/, 'Debe contener al menos un número'),
+      .min(8, 'Must be at least 8 characters')
+      .regex(/[A-Z]/, 'Must contain at least one uppercase letter')
+      .regex(/[0-9]/, 'Must contain at least one number'),
     confirmPassword: z.string(),
   })
   .refine((d) => d.password === d.confirmPassword, {
-    message: 'Las contraseñas no coinciden',
+    message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
 
@@ -33,7 +33,7 @@ export async function changePassword(
 
   const supabase = await createClient()
   const { error } = await supabase.auth.updateUser({ password: parsed.data.password })
-  if (error) return { error: 'No se pudo cambiar la contraseña. Intenta de nuevo.' }
+  if (error) return { error: 'Could not change the password. Please try again.' }
 
   return { success: true }
 }
@@ -41,10 +41,10 @@ export async function changePassword(
 export async function deleteAccount(): Promise<AccountState> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'No autenticado' }
+  if (!user) return { error: 'Not authenticated' }
 
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!serviceRoleKey) return { error: 'Configuración del servidor incompleta' }
+  if (!serviceRoleKey) return { error: 'Incomplete server configuration' }
 
   // Use admin client to fully delete the user from auth.users
   const admin = createAdminClient(
@@ -60,7 +60,7 @@ export async function deleteAccount(): Promise<AccountState> {
   await supabase.from('profiles').delete().eq('id', user.id)
   const { error } = await admin.auth.admin.deleteUser(user.id)
 
-  if (error) return { error: 'Error al eliminar la cuenta. Intenta de nuevo.' }
+  if (error) return { error: 'Error deleting the account. Please try again.' }
 
   redirect('/')
 }

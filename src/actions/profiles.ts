@@ -30,7 +30,7 @@ export async function updateProfile(
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'No autenticado' }
+  if (!user) return { error: 'Not authenticated' }
 
   const newUsername = parsed.data.username.toLowerCase()
 
@@ -43,7 +43,7 @@ export async function updateProfile(
     .maybeSingle()
 
   if (existing) {
-    return { error: 'Este username ya está en uso' }
+    return { error: 'This username is already taken' }
   }
 
   const { error } = await supabase
@@ -57,7 +57,7 @@ export async function updateProfile(
     .eq('id', user.id)
 
   if (error) {
-    return { error: 'Error al actualizar el perfil. Intenta nuevamente.' }
+    return { error: 'Error updating profile. Please try again.' }
   }
 
   revalidatePath('/', 'layout')
@@ -68,19 +68,19 @@ export async function uploadAvatar(formData: FormData): Promise<ProfileState> {
   const file = formData.get('avatar') as File | null
 
   if (!file || file.size === 0) {
-    return { error: 'Selecciona una imagen' }
+    return { error: 'Select an image' }
   }
 
   // Security: validate MIME type (don't trust extension)
   const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return { error: 'Solo se permiten imágenes JPG, PNG o WEBP' }
+    return { error: 'Only JPG, PNG, or WEBP images are allowed' }
   }
 
   // Security: max 2MB
   const MAX_SIZE = 2 * 1024 * 1024
   if (file.size > MAX_SIZE) {
-    return { error: 'La imagen no puede superar los 2MB' }
+    return { error: 'The image cannot exceed 2MB' }
   }
 
   const supabase = await createClient()
@@ -88,7 +88,7 @@ export async function uploadAvatar(formData: FormData): Promise<ProfileState> {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) return { error: 'No autenticado' }
+  if (!user) return { error: 'Not authenticated' }
 
   // Path uses user ID to prevent enumeration and enable upsert
   const ext = file.type === 'image/jpeg' ? 'jpg' : file.type.split('/')[1]
@@ -99,7 +99,7 @@ export async function uploadAvatar(formData: FormData): Promise<ProfileState> {
     .upload(storagePath, file, { upsert: true, contentType: file.type })
 
   if (uploadError) {
-    return { error: 'Error al subir la imagen. Intenta nuevamente.' }
+    return { error: 'Error uploading the image. Please try again.' }
   }
 
   const {
@@ -115,7 +115,7 @@ export async function uploadAvatar(formData: FormData): Promise<ProfileState> {
     .eq('id', user.id)
 
   if (updateError) {
-    return { error: 'Error al guardar el avatar' }
+    return { error: 'Error saving the avatar' }
   }
 
   revalidatePath('/', 'layout')

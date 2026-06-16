@@ -49,7 +49,7 @@ export function FollowButton({
         ) : (
           <UserMinus className="h-4 w-4" />
         )}
-        Siguiendo
+        Following
       </Button>
     )
   }
@@ -66,7 +66,7 @@ export function FollowButton({
       ) : (
         <UserPlus className="h-4 w-4" />
       )}
-      Seguir
+      Follow
     </Button>
   )
 }

@@ -21,7 +21,7 @@ export async function WhoToFollow({ currentUserId, isGuest }: { currentUserId?: 
   if (!users || users.length === 0) {
     return (
       <p className="text-sm text-muted-foreground py-2">
-        No hay usuarios aún. ¡Sé el primero en registrarte!
+        No users yet. Be the first to sign up!
       </p>
     )
   }
@@ -59,7 +59,7 @@ export async function WhoToFollow({ currentUserId, isGuest }: { currentUserId?: 
               variant="outline"
               className="rounded-full text-xs px-4 shrink-0 font-semibold"
             >
-              Seguir
+              Follow
             </Button>
           </Link>
         </div>

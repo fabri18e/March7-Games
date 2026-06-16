@@ -13,10 +13,10 @@ import type { Profile } from '@/types/database'
 type Tab = 'appearance' | 'profile' | 'account' | 'danger'
 
 const TABS: { key: Tab; label: string; icon: React.ElementType; requiresAuth: boolean }[] = [
-  { key: 'appearance', label: 'Apariencia', icon: Palette, requiresAuth: false },
-  { key: 'profile',    label: 'Perfil',     icon: UserIcon, requiresAuth: true  },
-  { key: 'account',   label: 'Cuenta',     icon: Lock,     requiresAuth: true  },
-  { key: 'danger',    label: 'Peligro',    icon: Trash2,   requiresAuth: true  },
+  { key: 'appearance', label: 'Appearance', icon: Palette, requiresAuth: false },
+  { key: 'profile',    label: 'Profile',     icon: UserIcon, requiresAuth: true  },
+  { key: 'account',   label: 'Account',     icon: Lock,     requiresAuth: true  },
+  { key: 'danger',    label: 'Danger',    icon: Trash2,   requiresAuth: true  },
 ]
 
 interface Props {
@@ -48,32 +48,32 @@ function LoginPrompt() {
         <LogIn className="h-5 w-5 text-primary" />
       </div>
       <div>
-        <p className="font-semibold">Inicia sesión para continuar</p>
-        <p className="text-sm text-muted-foreground mt-1">Esta sección requiere una cuenta</p>
+        <p className="font-semibold">Sign in to continue</p>
+        <p className="text-sm text-muted-foreground mt-1">This section requires an account</p>
       </div>
       <div className="flex gap-2">
-        <Button variant="outline" size="sm" onClick={() => router.push('/login')}>Iniciar sesión</Button>
-        <Button size="sm" onClick={() => router.push('/register')}>Registrarse</Button>
+        <Button variant="outline" size="sm" onClick={() => router.push('/login')}>Sign in</Button>
+        <Button size="sm" onClick={() => router.push('/register')}>Sign up</Button>
       </div>
     </div>
   )
 }
 
 function AppearanceSection() {
-  const [lang, setLang] = useState('es')
+  const [lang, setLang] = useState('en')
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-base font-bold">Apariencia</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">Personaliza cómo se ve la app</p>
+        <h2 className="text-base font-bold">Appearance</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">Customize how the app looks</p>
       </div>
 
       {/* Theme */}
       <div className="space-y-2">
-        <label className="text-sm font-medium">Tema</label>
+        <label className="text-sm font-medium">Theme</label>
         <div className="flex gap-2">
-          {([['dark', 'Oscuro', Moon], ['light', 'Claro', Sun]] as const).map(([value, label, Icon]) => (
+          {([['dark', 'Dark', Moon], ['light', 'Light', Sun]] as const).map(([value, label, Icon]) => (
             <button
               key={value}
               disabled={value === 'light'}
@@ -85,7 +85,7 @@ function AppearanceSection() {
             >
               <Icon className="h-3.5 w-3.5" />
               {label}
-              {value === 'light' && <span className="text-[10px] ml-1">· pronto</span>}
+              {value === 'light' && <span className="text-[10px] ml-1">· coming soon</span>}
             </button>
           ))}
         </div>
@@ -95,23 +95,23 @@ function AppearanceSection() {
 
       {/* Language */}
       <div className="space-y-2">
-        <label className="text-sm font-medium">Idioma</label>
+        <label className="text-sm font-medium">Language</label>
         <div className="flex gap-2">
-          {([['es', 'Español'], ['en', 'English']] as const).map(([value, label]) => (
+          {([['es', 'Spanish'], ['en', 'English']] as const).map(([value, label]) => (
             <button
               key={value}
               onClick={() => setLang(value)}
-              disabled={value === 'en'}
+              disabled={value === 'es'}
               className={`px-4 py-2 rounded-lg text-sm font-medium border transition-colors ${
                 lang === value
                   ? 'border-primary bg-primary/10 text-primary'
-                  : value === 'en'
+                  : value === 'es'
                   ? 'border-border text-muted-foreground opacity-40 cursor-not-allowed'
                   : 'border-border text-muted-foreground hover:text-foreground'
               }`}
             >
               {label}
-              {value === 'en' && <span className="ml-1 text-[10px]">· pronto</span>}
+              {value === 'es' && <span className="ml-1 text-[10px]">· coming soon</span>}
             </button>
           ))}
         </div>
@@ -144,8 +144,8 @@ function ProfileSection({ profile }: { profile: Profile | null }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-base font-bold">Perfil público</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">Así te ven los demás jugadores</p>
+        <h2 className="text-base font-bold">Public profile</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">This is how other players see you</p>
       </div>
 
       <div className="flex items-center gap-4">
@@ -165,36 +165,36 @@ function ProfileSection({ profile }: { profile: Profile | null }) {
         </div>
         <div>
           <p className="text-sm font-medium">Avatar</p>
-          <p className="text-xs text-muted-foreground">JPG, PNG o WEBP · Máx 2MB</p>
+          <p className="text-xs text-muted-foreground">JPG, PNG or WEBP · Max 2MB</p>
           {avatarState.error && <p className="text-xs text-destructive mt-1">{avatarState.error}</p>}
-          {avatarState.success && <p className="text-xs text-emerald-400 mt-1">Avatar actualizado</p>}
+          {avatarState.success && <p className="text-xs text-emerald-400 mt-1">Avatar updated</p>}
         </div>
       </div>
 
       <form action={profileAction} className="space-y-4">
-        {profileState.success && <SuccessBanner message="Perfil actualizado correctamente" />}
+        {profileState.success && <SuccessBanner message="Profile updated successfully" />}
         {profileState.error && <ErrorBanner message={profileState.error} />}
 
         <div className="space-y-1.5">
           <label className="text-sm font-medium">Username</label>
-          <input name="username" defaultValue={profile?.username ?? ''} placeholder="tu_username"
+          <input name="username" defaultValue={profile?.username ?? ''} placeholder="your_username"
             className="w-full bg-muted/40 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 focus:bg-background transition-colors" />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Nombre visible</label>
-          <input name="display_name" defaultValue={profile?.display_name ?? ''} placeholder="Tu nombre" maxLength={50}
+          <label className="text-sm font-medium">Display name</label>
+          <input name="display_name" defaultValue={profile?.display_name ?? ''} placeholder="Your name" maxLength={50}
             className="w-full bg-muted/40 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 focus:bg-background transition-colors" />
         </div>
 
         <div className="space-y-1.5">
           <label className="text-sm font-medium">Bio</label>
-          <textarea name="bio" defaultValue={profile?.bio ?? ''} placeholder="Cuéntanos algo sobre ti..." maxLength={300} rows={3}
+          <textarea name="bio" defaultValue={profile?.bio ?? ''} placeholder="Tell us something about yourself..." maxLength={300} rows={3}
             className="w-full bg-muted/40 border border-border rounded-lg px-3 py-2 text-sm resize-none outline-none focus:border-primary/50 focus:bg-background transition-colors" />
         </div>
 
         <Button type="submit" disabled={profilePending} size="sm" className="font-semibold">
-          {profilePending ? 'Guardando...' : 'Guardar cambios'}
+          {profilePending ? 'Saving...' : 'Save changes'}
         </Button>
       </form>
     </div>
@@ -207,39 +207,39 @@ function AccountSection({ user }: { user: User }) {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-base font-bold">Cuenta</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">Gestiona tu email y contraseña</p>
+        <h2 className="text-base font-bold">Account</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">Manage your email and password</p>
       </div>
 
       <div className="space-y-1.5">
         <label className="text-sm font-medium">Email</label>
         <input value={user.email ?? ''} disabled
           className="w-full bg-muted/20 border border-border rounded-lg px-3 py-2 text-sm text-muted-foreground cursor-not-allowed" />
-        <p className="text-xs text-muted-foreground">El email no se puede cambiar por ahora</p>
+        <p className="text-xs text-muted-foreground">Email cannot be changed at this time</p>
       </div>
 
       <hr className="border-border" />
 
       <div>
-        <h3 className="text-sm font-bold mb-4">Cambiar contraseña</h3>
+        <h3 className="text-sm font-bold mb-4">Change password</h3>
         <form action={action} className="space-y-4">
-          {state.success && <SuccessBanner message="Contraseña actualizada correctamente" />}
+          {state.success && <SuccessBanner message="Password updated successfully" />}
           {state.error && <ErrorBanner message={state.error} />}
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Nueva contraseña</label>
+            <label className="text-sm font-medium">New password</label>
             <input name="password" type="password" placeholder="••••••••"
               className="w-full bg-muted/40 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 focus:bg-background transition-colors" />
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-sm font-medium">Confirmar contraseña</label>
+            <label className="text-sm font-medium">Confirm password</label>
             <input name="confirmPassword" type="password" placeholder="••••••••"
               className="w-full bg-muted/40 border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-primary/50 focus:bg-background transition-colors" />
           </div>
 
           <Button type="submit" disabled={isPending} size="sm" className="font-semibold">
-            {isPending ? 'Actualizando...' : 'Cambiar contraseña'}
+            {isPending ? 'Updating...' : 'Change password'}
           </Button>
         </form>
       </div>
@@ -253,7 +253,7 @@ function DangerSection() {
   const [error, setError] = useState('')
 
   async function handleDelete() {
-    if (confirm !== 'eliminar') return
+    if (confirm !== 'delete') return
     setPending(true)
     const result = await deleteAccount()
     if (result?.error) { setError(result.error); setPending(false) }
@@ -262,17 +262,17 @@ function DangerSection() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-base font-bold">Zona de peligro</h2>
-        <p className="text-sm text-muted-foreground mt-0.5">Acciones irreversibles para tu cuenta</p>
+        <h2 className="text-base font-bold">Danger zone</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">Irreversible actions for your account</p>
       </div>
 
       <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-5 space-y-4">
         <div className="flex items-start gap-3">
           <Trash2 className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold text-sm">Eliminar cuenta</p>
+            <p className="font-semibold text-sm">Delete account</p>
             <p className="text-sm text-muted-foreground mt-0.5">
-              Se eliminarán permanentemente tu perfil, publicaciones y todos tus datos. Esta acción no se puede deshacer.
+              This will permanently delete your profile, posts, and all your data. This action cannot be undone.
             </p>
           </div>
         </div>
@@ -281,14 +281,14 @@ function DangerSection() {
 
         <div className="space-y-2">
           <label className="text-xs text-muted-foreground">
-            Escribe <span className="font-mono font-bold text-foreground">eliminar</span> para confirmar
+            Type <span className="font-mono font-bold text-foreground">delete</span> to confirm
           </label>
-          <input value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="eliminar"
+          <input value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="delete"
             className="w-full bg-background border border-border rounded-lg px-3 py-2 text-sm outline-none focus:border-destructive/50 transition-colors" />
         </div>
 
-        <Button variant="destructive" size="sm" disabled={confirm !== 'eliminar' || pending} onClick={handleDelete} className="font-semibold">
-          {pending ? 'Eliminando...' : 'Eliminar mi cuenta'}
+        <Button variant="destructive" size="sm" disabled={confirm !== 'delete' || pending} onClick={handleDelete} className="font-semibold">
+          {pending ? 'Deleting...' : 'Delete my account'}
         </Button>
       </div>
     </div>
@@ -300,7 +300,7 @@ export function SettingsClient({ user, profile }: Props) {
 
   return (
     <div>
-      <h1 className="text-xl font-bold mb-6">Ajustes</h1>
+      <h1 className="text-xl font-bold mb-6">Settings</h1>
 
       <div className="flex gap-6">
         {/* Left nav */}

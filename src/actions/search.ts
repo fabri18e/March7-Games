@@ -1,16 +1,27 @@
 'use server'
 
+import Fuse from 'fuse.js'
 import { createClient } from '@/lib/supabase/server'
 
-export async function searchProfiles(query: string) {
-  if (!query.trim()) return []
+const MAX_PROFILES = 1000
+
+export async function searchProfiles(query: string, limit = 6) {
+  const trimmed = query.trim()
+  if (!trimmed) return []
 
   const supabase = await createClient()
   const { data } = await supabase
     .from('profiles')
     .select('id, username, display_name, avatar_url')
-    .or(`username.ilike.%${query}%,display_name.ilike.%${query}%`)
-    .limit(6)
+    .limit(MAX_PROFILES)
 
-  return data ?? []
+  if (!data || data.length === 0) return []
+
+  const fuse = new Fuse(data, {
+    keys: ['username', 'display_name'],
+    threshold: 0.35,
+    ignoreLocation: true,
+  })
+
+  return fuse.search(trimmed).slice(0, limit).map((r) => r.item)
 }

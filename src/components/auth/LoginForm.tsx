@@ -15,7 +15,7 @@ function SubmitButton() {
   return (
     <Button type="submit" disabled={pending} className="w-full gap-2">
       {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-      {pending ? 'Iniciando sesión...' : 'Iniciar sesión'}
+      {pending ? 'Logging in...' : 'Log in'}
     </Button>
   )
 }
@@ -38,14 +38,14 @@ export function LoginForm() {
           id="email"
           name="email"
           type="email"
-          placeholder="tu@email.com"
+          placeholder="you@email.com"
           required
           autoComplete="email"
         />
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Contraseña</Label>
+        <Label htmlFor="password">Password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -60,7 +60,7 @@ export function LoginForm() {
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-            aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
             {showPassword ? (
               <EyeOff className="h-4 w-4" />
@@ -74,7 +74,7 @@ export function LoginForm() {
             href="/forgot-password"
             className="text-sm text-primary hover:underline"
           >
-            ¿Olvidaste tu contraseña?
+            Forgot your password?
           </Link>
         </div>
       </div>
@@ -82,9 +82,9 @@ export function LoginForm() {
       <SubmitButton />
 
       <p className="text-center text-sm text-muted-foreground">
-        ¿No tienes cuenta?{' '}
+        Don&apos;t have an account?{' '}
         <Link href="/register" className="text-primary hover:underline font-medium">
-          Regístrate gratis
+          Sign up for free
         </Link>
       </p>
     </form>

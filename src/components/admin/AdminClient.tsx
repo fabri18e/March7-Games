@@ -27,7 +27,7 @@ interface Props {
 
 function timeAgo(dateStr: string) {
   const diff = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000)
-  if (diff < 60) return 'ahora'
+  if (diff < 60) return 'now'
   if (diff < 3600) return `${Math.floor(diff / 60)}m`
   if (diff < 86400) return `${Math.floor(diff / 3600)}h`
   return `${Math.floor(diff / 86400)}d`
@@ -71,9 +71,9 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
   }
 
   const TABS = [
-    { key: 'stats' as Tab, label: 'Estadísticas', icon: BarChart3 },
+    { key: 'stats' as Tab, label: 'Statistics', icon: BarChart3 },
     { key: 'posts' as Tab, label: 'Posts', icon: Newspaper },
-    { key: 'users' as Tab, label: 'Usuarios', icon: Users },
+    { key: 'users' as Tab, label: 'Users', icon: Users },
   ]
 
   return (
@@ -81,14 +81,14 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold">Panel de administración</h1>
-          <p className="text-sm text-muted-foreground mt-0.5">Gestiona usuarios, posts y contenido</p>
+          <h1 className="text-xl font-bold">Admin panel</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">Manage users, posts, and content</p>
         </div>
 
         {/* Preview mode */}
         <div className="flex items-center gap-2">
           <Eye className="h-4 w-4 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">Ver como:</span>
+          <span className="text-xs text-muted-foreground">View as:</span>
           {(['admin', 'user', 'guest'] as const).map((mode) => (
             <button
               key={mode}
@@ -100,7 +100,7 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
                   : 'border-border text-muted-foreground hover:text-foreground hover:bg-accent'
               }`}
             >
-              {mode === 'admin' ? 'Admin' : mode === 'user' ? 'Usuario' : 'Invitado'}
+              {mode === 'admin' ? 'Admin' : mode === 'user' ? 'User' : 'Guest'}
             </button>
           ))}
         </div>
@@ -128,10 +128,10 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
       {tab === 'stats' && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Usuarios', value: stats.totalUsers, icon: Users, color: 'text-blue-400' },
+            { label: 'Users', value: stats.totalUsers, icon: Users, color: 'text-blue-400' },
             { label: 'Posts', value: stats.totalPosts, icon: Newspaper, color: 'text-emerald-400' },
             { label: 'Likes', value: stats.totalLikes, icon: BarChart3, color: 'text-rose-400' },
-            { label: 'Juegos', value: stats.totalGames, icon: BarChart3, color: 'text-amber-400' },
+            { label: 'Games', value: stats.totalGames, icon: BarChart3, color: 'text-amber-400' },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className="bg-card border border-border rounded-xl p-5">
               <div className="flex items-center justify-between mb-3">
@@ -148,7 +148,7 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
       {tab === 'posts' && (
         <div className="space-y-2">
           {posts.length === 0 && (
-            <p className="text-sm text-muted-foreground py-8 text-center">No hay posts</p>
+            <p className="text-sm text-muted-foreground py-8 text-center">No posts</p>
           )}
           {posts.map((post) => (
             <div key={post.id} className="bg-card border border-border rounded-xl p-4 flex gap-3">
@@ -168,10 +168,10 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
               </div>
               {confirmDelete === post.id ? (
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs text-destructive">¿Eliminar?</span>
+                  <span className="text-xs text-destructive">Delete?</span>
                   <button onClick={() => handleDeletePost(post.id)} disabled={isPending}
                     className="text-xs bg-destructive text-white px-2 py-1 rounded font-medium hover:bg-destructive/80 transition-colors">
-                    Sí
+                    Yes
                   </button>
                   <button onClick={() => setConfirmDelete(null)}
                     className="text-xs border border-border px-2 py-1 rounded font-medium hover:bg-accent transition-colors">
@@ -208,7 +208,7 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
                     <span className="text-[10px] font-bold bg-primary/20 text-primary px-1.5 py-0.5 rounded">Admin</span>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">{new Date(user.created_at).toLocaleDateString('es-ES')}</p>
+                <p className="text-xs text-muted-foreground">{new Date(user.created_at).toLocaleDateString('en-US')}</p>
               </div>
 
               <div className="flex items-center gap-2 shrink-0">
@@ -217,17 +217,17 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
                     <button
                       onClick={() => handleToggleAdmin(user.id, user.is_admin)}
                       disabled={isPending}
-                      title={user.is_admin ? 'Quitar admin' : 'Hacer admin'}
+                      title={user.is_admin ? 'Remove admin' : 'Make admin'}
                       className="p-1.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
                     >
                       {user.is_admin ? <ShieldOff className="h-4 w-4" /> : <Shield className="h-4 w-4" />}
                     </button>
                     {confirmDelete === user.id ? (
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-destructive">¿Eliminar?</span>
+                        <span className="text-xs text-destructive">Delete?</span>
                         <button onClick={() => handleDeleteUser(user.id)} disabled={isPending}
                           className="text-xs bg-destructive text-white px-2 py-1 rounded font-medium hover:bg-destructive/80 transition-colors">
-                          Sí
+                          Yes
                         </button>
                         <button onClick={() => setConfirmDelete(null)}
                           className="text-xs border border-border px-2 py-1 rounded font-medium hover:bg-accent transition-colors">
@@ -243,7 +243,7 @@ export function AdminClient({ currentUserId, users, posts, stats, currentPreview
                   </>
                 )}
                 {user.id === currentUserId && (
-                  <span className="text-xs text-muted-foreground italic">Tú</span>
+                  <span className="text-xs text-muted-foreground italic">You</span>
                 )}
               </div>
             </div>

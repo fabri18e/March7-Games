@@ -30,10 +30,10 @@ export function TopNavClient({ user, profile }: Props) {
     return (
       <div className="flex items-center gap-2">
         <Button variant="outline" size="sm" onClick={() => router.push('/login')}>
-          Iniciar sesión
+          Log in
         </Button>
         <Button size="sm" className="rounded-full" onClick={() => router.push('/register')}>
-          Registrarse
+          Sign up
         </Button>
       </div>
     )
@@ -69,14 +69,14 @@ export function TopNavClient({ user, profile }: Props) {
           onClick={() => router.push(`/profile/${profile?.username}`)}
         >
           <UserIcon className="mr-2 h-4 w-4" />
-          Mi perfil
+          My profile
         </DropdownMenuItem>
         <DropdownMenuItem
           className="cursor-pointer"
           onClick={() => router.push('/settings')}
         >
           <Settings className="mr-2 h-4 w-4" />
-          Configuración
+          Settings
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
@@ -86,7 +86,7 @@ export function TopNavClient({ user, profile }: Props) {
           disabled={isPending}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          Cerrar sesión
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

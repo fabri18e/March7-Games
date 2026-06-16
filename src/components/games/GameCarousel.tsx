@@ -1,27 +1,18 @@
 'use client'
 
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, type ReactNode } from 'react'
 import Link from 'next/link'
-import { Gamepad2, Play, ChevronRight, ChevronLeft } from 'lucide-react'
+import { Play, ChevronRight, ChevronLeft } from 'lucide-react'
+import { formatPlays, type Game } from '@/lib/games-data'
 
-const MOCK_GAMES = [
-  { id: '1',  title: 'Pixel Dungeon', genre: 'RPG',        plays: 1240, color: 'from-violet-600 to-indigo-800',  emoji: '⚔️' },
-  { id: '2',  title: 'Space Drift',   genre: 'Arcade',     plays: 890,  color: 'from-cyan-600 to-blue-800',      emoji: '🚀' },
-  { id: '3',  title: 'Block Puzzle',  genre: 'Puzzle',     plays: 3100, color: 'from-emerald-600 to-teal-800',   emoji: '🧩' },
-  { id: '4',  title: 'Neon Runner',   genre: 'Plataformer',plays: 670,  color: 'from-pink-600 to-rose-800',      emoji: '🏃' },
-  { id: '5',  title: 'Tower Wars',    genre: 'Estrategia', plays: 2050, color: 'from-amber-600 to-orange-800',   emoji: '🏰' },
-  { id: '6',  title: 'Cave Explorer', genre: 'Aventura',   plays: 430,  color: 'from-stone-600 to-zinc-800',     emoji: '🗿' },
-  { id: '7',  title: 'Astro Jump',    genre: 'Arcade',     plays: 1870, color: 'from-blue-600 to-purple-800',    emoji: '🌙' },
-  { id: '8',  title: 'Rune Forge',    genre: 'RPG',        plays: 990,  color: 'from-red-600 to-rose-900',       emoji: '🔮' },
-  { id: '9',  title: 'Frostbite',     genre: 'Plataformer',plays: 560,  color: 'from-sky-500 to-blue-700',       emoji: '❄️' },
-  { id: '10', title: 'Laser Grid',    genre: 'Puzzle',     plays: 1450, color: 'from-lime-600 to-green-800',     emoji: '🔦' },
-]
-
-function formatPlays(n: number) {
-  return n >= 1000 ? `${(n / 1000).toFixed(1)}k` : String(n)
+interface Props {
+  title: string
+  icon: ReactNode
+  games: Game[]
+  viewAllHref?: string
 }
 
-export function FeaturedGames() {
+export function GameCarousel({ title, icon, games, viewAllHref }: Props) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const [canLeft, setCanLeft] = useState(false)
   const [canRight, setCanRight] = useState(true)
@@ -45,23 +36,26 @@ export function FeaturedGames() {
     scrollRef.current?.scrollBy({ left: dir === 'left' ? -300 : 300, behavior: 'smooth' })
   }
 
+  if (games.length === 0) return null
+
   return (
     <section>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Gamepad2 className="h-4 w-4 text-primary" />
-          <h2 className="font-bold text-sm">Juegos destacados</h2>
+          {icon}
+          <h2 className="font-bold text-sm">{title}</h2>
         </div>
-        <Link
-          href="/explore"
-          className="flex items-center gap-0.5 text-xs text-muted-foreground hover:text-primary transition-colors"
-        >
-          Ver todos <ChevronRight className="h-3.5 w-3.5" />
-        </Link>
+        {viewAllHref && (
+          <Link
+            href={viewAllHref}
+            className="flex items-center gap-0.5 text-xs text-muted-foreground hover:text-primary transition-colors"
+          >
+            See all <ChevronRight className="h-3.5 w-3.5" />
+          </Link>
+        )}
       </div>
 
       <div className="relative">
-        {/* Left arrow */}
         {canLeft && (
           <button
             onClick={() => scroll('left')}
@@ -71,12 +65,8 @@ export function FeaturedGames() {
           </button>
         )}
 
-        {/* Scrollable row */}
-        <div
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto scrollbar-none"
-        >
-          {MOCK_GAMES.map((game) => (
+        <div ref={scrollRef} className="flex gap-3 overflow-x-auto scrollbar-none">
+          {games.map((game) => (
             <Link
               key={game.id}
               href={`/games/${game.id}`}
@@ -103,7 +93,6 @@ export function FeaturedGames() {
           ))}
         </div>
 
-        {/* Right arrow */}
         {canRight && (
           <button
             onClick={() => scroll('right')}

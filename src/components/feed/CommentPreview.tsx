@@ -20,10 +20,10 @@ export function CommentPreview({ postId, commentCount }: Props) {
   useEffect(() => {
     startTransition(async () => {
       const data = await getComments(postId)
-      // Solo comentarios directos al post (no sub-respuestas)
+      // Only comments directly on the post (not sub-replies)
       const direct = data.filter(c => !c.parent_id)
       if (!direct.length) return
-      // El de más likes; si hay empate, el más reciente
+      // The one with the most likes; if tied, the most recent
       const best = direct.reduce((a, b) => {
         if (b.like_count !== a.like_count) return b.like_count > a.like_count ? b : a
         return new Date(b.created_at) >= new Date(a.created_at) ? b : a
@@ -50,7 +50,7 @@ export function CommentPreview({ postId, commentCount }: Props) {
         {comment.content}
       </p>
       {extraCount > 0 && (
-        <span className="text-xs text-violet-400 hover:text-violet-300 shrink-0 ml-2 transition-colors">Ver {extraCount} más →</span>
+        <span className="text-xs text-violet-400 hover:text-violet-300 shrink-0 ml-2 transition-colors">See {extraCount} more →</span>
       )}
     </Link>
   )

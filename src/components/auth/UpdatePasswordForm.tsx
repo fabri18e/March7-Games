@@ -24,19 +24,19 @@ export function UpdatePasswordForm() {
     setError('')
 
     if (password.length < 8) {
-      setError('La contraseña debe tener al menos 8 caracteres')
+      setError('Password must be at least 8 characters long')
       return
     }
     if (!/[A-Z]/.test(password)) {
-      setError('Debe contener al menos una letra mayúscula')
+      setError('Must contain at least one uppercase letter')
       return
     }
     if (!/[0-9]/.test(password)) {
-      setError('Debe contener al menos un número')
+      setError('Must contain at least one number')
       return
     }
     if (password !== confirm) {
-      setError('Las contraseñas no coinciden')
+      setError('Passwords do not match')
       return
     }
 
@@ -46,7 +46,7 @@ export function UpdatePasswordForm() {
     setPending(false)
 
     if (error) {
-      setError('No se pudo actualizar la contraseña. El enlace puede haber expirado.')
+      setError('Could not update the password. The link may have expired.')
       return
     }
 
@@ -61,8 +61,8 @@ export function UpdatePasswordForm() {
           <CheckCircle2 className="h-7 w-7 text-emerald-400" />
         </div>
         <div>
-          <h3 className="font-bold text-lg">¡Contraseña actualizada!</h3>
-          <p className="text-sm text-muted-foreground mt-1">Redirigiendo...</p>
+          <h3 className="font-bold text-lg">Password updated!</h3>
+          <p className="text-sm text-muted-foreground mt-1">Redirecting...</p>
         </div>
       </div>
     )
@@ -77,7 +77,7 @@ export function UpdatePasswordForm() {
       )}
 
       <div className="space-y-2">
-        <Label htmlFor="password">Nueva contraseña</Label>
+        <Label htmlFor="password">New password</Label>
         <div className="relative">
           <Input
             id="password"
@@ -97,12 +97,12 @@ export function UpdatePasswordForm() {
           </button>
         </div>
         <p className="text-xs text-muted-foreground">
-          Mínimo 8 caracteres, una mayúscula y un número.
+          Minimum 8 characters, one uppercase letter, and one number.
         </p>
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="confirm">Confirmar contraseña</Label>
+        <Label htmlFor="confirm">Confirm password</Label>
         <div className="relative">
           <Input
             id="confirm"
@@ -125,7 +125,7 @@ export function UpdatePasswordForm() {
 
       <Button type="submit" disabled={pending} className="w-full gap-2">
         {pending && <Loader2 className="h-4 w-4 animate-spin" />}
-        {pending ? 'Actualizando...' : 'Guardar nueva contraseña'}
+        {pending ? 'Updating...' : 'Save new password'}
       </Button>
     </form>
   )

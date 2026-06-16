@@ -33,21 +33,21 @@ export function Navbar({ user, profile }: NavbarProps) {
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             >
               <Home className="h-4 w-4" />
-              <span className="hidden sm:block">Inicio</span>
+              <span className="hidden sm:block">Home</span>
             </Link>
             <Link
               href="/explore"
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             >
               <Compass className="h-4 w-4" />
-              <span className="hidden sm:block">Explorar</span>
+              <span className="hidden sm:block">Explore</span>
             </Link>
             <Link
               href="/games/upload"
               className="flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
             >
               <Upload className="h-4 w-4" />
-              <span className="hidden sm:block">Subir juego</span>
+              <span className="hidden sm:block">Upload game</span>
             </Link>
           </nav>
 

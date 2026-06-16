@@ -16,16 +16,16 @@ export function FeedWithSidebar({ children, sidebar }: Props) {
       {/* Feed column */}
       <div className="flex-1 border-r border-border min-h-screen min-w-0">
         <div className="sticky top-0 z-10 backdrop-blur-md bg-background/80 border-b border-border px-4 py-3 flex items-center justify-between">
-          <h1 className="font-bold text-xl">Inicio</h1>
+          <h1 className="font-bold text-xl">Home</h1>
           <button
             onClick={() => setOpen((v) => !v)}
-            title={open ? 'Ocultar panel' : 'Mostrar panel'}
+            title={open ? 'Hide panel' : 'Show panel'}
             className="hidden md:flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground border border-border rounded-lg px-2.5 py-1.5 hover:bg-accent transition-colors"
           >
             {open ? (
               <>
                 <PanelRightClose className="h-3.5 w-3.5" />
-                <span>Ocultar</span>
+                <span>Hide</span>
               </>
             ) : (
               <>

@@ -18,7 +18,7 @@ export function GuestPostPrompt() {
     <div className="bg-card border border-border rounded-xl p-4">
       <div className="flex items-center gap-2 mb-3">
         <Gamepad2 className="h-4 w-4 text-primary" />
-        <span className="text-sm font-semibold text-primary">Nueva publicación</span>
+        <span className="text-sm font-semibold text-primary">New post</span>
       </div>
 
       <div className="flex gap-3">
@@ -28,7 +28,7 @@ export function GuestPostPrompt() {
 
         <div className="flex-1 flex flex-col gap-3">
           <textarea
-            placeholder="¿Qué estás jugando? Comparte tu experiencia..."
+            placeholder="What are you playing? Share your experience..."
             className="w-full bg-muted/30 border border-border rounded-lg px-3 py-2.5 text-sm placeholder:text-muted-foreground resize-none outline-none focus:border-primary/50 focus:bg-background transition-colors min-h-[80px] leading-relaxed"
             value={content}
             maxLength={MAX_CHARS}
@@ -42,14 +42,14 @@ export function GuestPostPrompt() {
                 charsLeft <= 50 ? 'text-amber-500' : 'text-muted-foreground'
               }`}
             >
-              {charsLeft} caracteres restantes
+              {charsLeft} characters left
             </span>
             <Button
               size="sm"
               className="rounded-lg font-semibold px-5"
               onClick={() => router.push('/register')}
             >
-              Publicar
+              Post
             </Button>
           </div>
         </div>

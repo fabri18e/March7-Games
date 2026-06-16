@@ -31,7 +31,7 @@ export function LeftSidebarClient({ user, profile }: Props) {
           className="rounded-full font-semibold"
           onClick={() => router.push('/register')}
         >
-          <span className="hidden xl:block">Registrarse</span>
+          <span className="hidden xl:block">Sign up</span>
           <span className="xl:hidden text-lg">+</span>
         </Button>
         <Button
@@ -39,7 +39,7 @@ export function LeftSidebarClient({ user, profile }: Props) {
           className="rounded-full hidden xl:flex"
           onClick={() => router.push('/login')}
         >
-          Iniciar sesión
+          Log in
         </Button>
       </div>
     )
@@ -76,7 +76,7 @@ export function LeftSidebarClient({ user, profile }: Props) {
           disabled={isPending}
         >
           <LogOut className="mr-2 h-4 w-4" />
-          Cerrar sesión
+          Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
